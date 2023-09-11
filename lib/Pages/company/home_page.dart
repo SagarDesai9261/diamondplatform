@@ -51,7 +51,8 @@ class _Home_Page_companyState extends State<Home_Page_company> {
       "Home".tr(),
       Colors.blue,
       labelStyle: const TextStyle(
-        fontWeight: FontWeight.normal,
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
       ),
     ),
     TabItem(
@@ -67,12 +68,20 @@ class _Home_Page_companyState extends State<Home_Page_company> {
       Icons.history,
       "History".tr(),
       Colors.red,
+     labelStyle: TextStyle(
+       color: Colors.red,
+       fontWeight: FontWeight.bold
+     )
      // circleStrokeColor: Colors.black,
     ),
     TabItem(
       Icons.add,
       "Job Post".tr(),
       Colors.cyan,
+        labelStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.red,
+        )
     ),
   ]);
 
@@ -401,7 +410,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                   }
 
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height * .46,
+                    height: MediaQuery.of(context).size.height * .5,
                     child: ListView.builder(
                       itemCount: filteredJobPosts.length,
                       itemBuilder: (context, index) {

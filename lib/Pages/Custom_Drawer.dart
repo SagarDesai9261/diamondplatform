@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diamondplatform/Pages/Login_Page.dart';
 import 'package:diamondplatform/Pages/company/home_page.dart';
@@ -130,6 +132,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 color: Colors.black,
               ),
               title: Text("Settings").tr(),
+            ),
+          ),
+          InkWell(
+            onTap: () async{
+              Share.share("https://github.com/SagarDesai9261/diamondplatform");
+            },
+            child:  ListTile(
+              leading: Icon(
+                Icons.share,
+                color: Colors.black,
+              ),
+              title: Text("Share").tr(),
             ),
           ),
           InkWell(

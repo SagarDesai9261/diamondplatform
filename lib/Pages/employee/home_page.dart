@@ -50,7 +50,8 @@ class _Home_page_employeeState extends State<Home_page_employee> {
       "Home".tr(),
       Colors.blue,
       labelStyle: const TextStyle(
-        fontWeight: FontWeight.normal,
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
       ),
     ),
     TabItem(
