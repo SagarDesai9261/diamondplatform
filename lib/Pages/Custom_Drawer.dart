@@ -1,8 +1,11 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -136,7 +139,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           InkWell(
             onTap: () async{
-              Share.share("https://github.com/SagarDesai9261/diamondplatform");
+              try {
+                final apkFilePath = await _copyApkFile();
+                await Share.shareFiles([apkFilePath], text: 'Share APK File');
+              } catch (e) {
+                print('Error sharing APK file: $e');
+              }
+
+             // Share.share("https://github.com/SagarDesai9261/diamondplatform");
             },
             child:  ListTile(
               leading: Icon(
@@ -198,5 +208,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
         ],
       ),
     );
+  }
+  Future<String> _copyApkFile() async {
+    final directory = await getTemporaryDirectory();
+    final apkFile = File('${directory.path}/app-release.apk');
+    final data = await rootBundle.load('assets/app-release.apk');
+    await apkFile.writeAsBytes(data.buffer.asUint8List());
+    return apkFile.path;
   }
 }

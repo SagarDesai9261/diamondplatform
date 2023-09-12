@@ -65,6 +65,7 @@ dependencies:
   google_mobile_ads:
   share: ^2.0.4
   firebase_auth: ^4.9.0
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:
