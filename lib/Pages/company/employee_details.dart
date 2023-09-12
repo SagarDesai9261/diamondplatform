@@ -21,6 +21,7 @@ class _employee_viewState extends State<employee_view> {
   List? job_post_for_company = [];
   String? dropdownValue1;
   String? dropdownValue2;
+  String? companyname;
   String selectedOption3 = 'Option 1';
   List<String> options = ['Option 1', 'Option 2','Option 3'];
   @override
@@ -194,6 +195,15 @@ class _employee_viewState extends State<employee_view> {
                     child: ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context,index){
+                        if(snapshot.data![index].companyName != "" || snapshot.data![index].companyName != null){
+                          companyname = snapshot.data![index]!.companyName.toString();
+                          if(companyname!.length > 25){
+                            companyname = companyname!.substring(0,25);
+                          }
+
+
+                        }
+                          print("${snapshot.data![index].companyName}");
                       return Container(
                         margin: EdgeInsets.all(5),
                         padding: EdgeInsets.all(5),
@@ -293,14 +303,15 @@ class _employee_viewState extends State<employee_view> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                       snapshot.data![index].companyName == null ? Text(
+                                       snapshot.data![index].companyName == null ||snapshot.data![index].companyName == "" || snapshot.data![index].companyName == "null" ? Text(
                                           "None",
                                           style: TextStyle(fontSize: 16),
                                         ) : Column(
                                          mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(snapshot.data![index].companyName.toString()),
+
+                                            Text(companyname.toString(),),
                                             snapshot.data![index].isSalaryMethod == true ? Text(snapshot.data![index].salary.toString() + " per Month") : Text(snapshot.data![index].price.toString()+ "per piece".tr())
                                           ],
                                         ),

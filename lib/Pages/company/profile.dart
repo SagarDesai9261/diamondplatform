@@ -447,7 +447,7 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
       _gstController.text = data['data']['gstNumber'];
       _selecteddepartment = data['data']['department'];
       _selecteddesignation = data['data']['designation'];
-      getProfileImgURL = data['data']['companyImage'];
+      getProfileImgURL = data['data']['companyImage']??"";
 
       return data['data'];
     } else {

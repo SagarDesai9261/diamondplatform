@@ -186,8 +186,11 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                     SizedBox(
                       height: 40,
                     ),
-
+                    profileImgPath == null || profileImgPath == "" ?
                     CircleAvatar(
+                      maxRadius: 60,
+                        backgroundImage: AssetImage('assets/tree-736885_1280.jpg'),
+                    ):CircleAvatar(
                       maxRadius: 60,
                       backgroundImage: NetworkImage(profileImgPath),
                     ),
@@ -725,11 +728,11 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
       _aadhaarController.text = data['data']['adharNumber'].toString();
       _selecteddepartment = data['data']['department'];
       _selecteddesignation = data['data']['designation'];
-      profileImgPath = data['data']['employeeImage'];
+      profileImgPath = data['data']['employeeImage'] ?? "";
 
       company_Name.text = data['data']['companyName'] ?? "";
       salary.text = data["data"]["salary"]??"";
-      data['data']['companyName']=="null" || data['data']['companyName']==null ? currentCompany = 1 : currentCompany = 2;
+      data['data']['companyName']=="null" || data['data']['companyName']==null || data['data']['companyName']==""? currentCompany = 1 : currentCompany = 2;
       price.text = data["data"]["price"]??"";
       print(getProfileImgURL);
 
