@@ -64,6 +64,7 @@ dependencies:
   flutter_local_notifications:
   google_mobile_ads:
   share: ^2.0.4
+  firebase_auth: ^4.9.0
 
 dev_dependencies:
   flutter_test:
