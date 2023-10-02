@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": "101",
+      "name": "Abc",
+      "email": "abc@gmail.com",
+      "password": "abc123",
+      "description": "Description 1"
+    },
+    {
+      "id": "102",
+      "name": "Abcd",
+      "email": "abcd@gmail.com",
+      "password": "abcd123",
+      "description": "Description 2"
+    },
+    {
+      "id": "103",
+      "name": "Abcdef",
+      "email": "abcdef@gmail.com",
+      "password": "abcdef123",
+      "description": "Description 3"
+    }
+  ]
+}
