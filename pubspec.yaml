@@ -68,7 +68,12 @@ dependencies:
   path_provider: ^2.1.1
   rflutter_alert:
   awesome_dialog: ^3.1.0
-  flutter_native_splash: ^2.3.2
+  flutter_native_splash: ^2.3.4
+  frino_icons:
+  flutter_svg:
+  geocoding: ^2.0.1
+
+
 
 dev_dependencies:
   flutter_test:
@@ -100,6 +105,7 @@ flutter:
     - assets/translations/
     - assets/google.png
     - assets/user.json
+    - assets/ca/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

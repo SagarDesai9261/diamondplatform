@@ -14,7 +14,7 @@ import '../../main.dart';
 import '../AnimatedDotsLoader.dart';
 
 class ProfilePageCompany extends StatefulWidget {
-  const ProfilePageCompany({super.key});
+ // const ProfilePageCompany({super.key});
 
   @override
   State<ProfilePageCompany> createState() => _ProfilePageCompanyState();
@@ -57,7 +57,7 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
     getApiComapny().then((_) {
       setState(() {
         isLoading =
-        false; // After the response is received, set isLoading to false
+            false; // After the response is received, set isLoading to false
       });
     });
     fetchCities();
@@ -75,7 +75,6 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
       if (pickedFile != null) {
         _selectedImage = File(pickedFile.path);
         _isImageSelected = true; // Set the flag to true when an image is picked
-
       } else {}
     });
   }
@@ -99,7 +98,7 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
         var responseString = utf8.decode(responseData);
         var jsonResponse = json.decode(responseString);
         profileImgPath = jsonResponse['iamge_path'];
-       // print('$profileImgPath'); // Correct the key to "iamge_path"
+
         // Now you can set your image using the 'imagePath' variable
       } else {}
     } finally {
@@ -128,14 +127,16 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                     SizedBox(
                       height: 50,
                     ),
-                    getProfileImgURL.isEmpty ? CircleAvatar(
-                      maxRadius: 60,
-                      backgroundImage: AssetImage('assets/tree-736885_1280.jpg'),
-                    ):
-                    CircleAvatar(
-                      maxRadius: 60,
-                      backgroundImage: NetworkImage(getProfileImgURL),
-                    ),
+                    getProfileImgURL.isEmpty
+                        ? CircleAvatar(
+                            maxRadius: 60,
+                            backgroundImage:
+                                AssetImage('assets/tree-736885_1280.jpg'),
+                          )
+                        : CircleAvatar(
+                            maxRadius: 60,
+                            backgroundImage: NetworkImage(getProfileImgURL),
+                          ),
                     SizedBox(
                       height: 5,
                     ),
@@ -156,7 +157,9 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.translate("name_hint") ??"name_hint",
+                        labelText: AppLocalizations.of(context)!
+                                .translate("name_hint") ??
+                            "name_hint",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.black),
@@ -173,7 +176,9 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                     TextFormField(
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText:  AppLocalizations.of(context)!.translate("address_hint") ??"address_hint",
+                        labelText: AppLocalizations.of(context)!
+                                .translate("address_hint") ??
+                            "address_hint",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.black),
@@ -191,7 +196,8 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                     ),
                     DropdownButtonFormField<String>(
                       value: selectedCity,
-                      items: cities.map<DropdownMenuItem<String>>((String value) {
+                      items:
+                          cities.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -211,7 +217,9 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        labelText:  AppLocalizations.of(context)!.translate("Select a City") ??"Select a City",
+                        labelText: AppLocalizations.of(context)!
+                                .translate("Select a City") ??
+                            "Select a City",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.black),
@@ -224,7 +232,9 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                       keyboardType: TextInputType.number,
                       maxLength: 10,
                       decoration: InputDecoration(
-                        labelText:  AppLocalizations.of(context)!.translate("contact_hint") ??"Contact_hint",
+                        labelText: AppLocalizations.of(context)!
+                                .translate("contact_hint") ??
+                            "Contact_hint",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.black),
@@ -244,7 +254,9 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                       controller: _gstController,
                       inputFormatters: [LengthLimitingTextInputFormatter(15)],
                       decoration: InputDecoration(
-                        labelText:  AppLocalizations.of(context)!.translate("gst_number_hint") ??"Gst Number",
+                        labelText: AppLocalizations.of(context)!
+                                .translate("gst_number_hint") ??
+                            "Gst Number",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.black),
@@ -269,7 +281,9 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
                       ),
-                      hint:  Text( AppLocalizations.of(context)!.translate("select_department") ??"Select Department"),
+                      hint: Text(AppLocalizations.of(context)!
+                              .translate("select_department") ??
+                          "Select Department"),
                       isExpanded: true,
                       isDense: true,
                       value: _selecteddepartment,
@@ -327,7 +341,7 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                       child: SizedBox(
                         height: MediaQuery.of(context).size.height * .06,
                         width:
-                        double.infinity, // Increase the width of the button
+                            double.infinity, // Increase the width of the button
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
@@ -338,13 +352,13 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
                           onPressed: () async {
                             setState(() {
                               _isUpdatingProfile =
-                              true; // Show CircularProgressIndicator
+                                  true; // Show CircularProgressIndicator
                             });
                             if (_isImageSelected) await _uploadProfileImage();
                             await _updatneCompayProfile();
                             setState(() {
                               _isUpdatingProfile =
-                              false; // Hide CircularProgressIndicator
+                                  false; // Hide CircularProgressIndicator
                             });
                           },
                           child: Text(
@@ -366,17 +380,17 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
   }
 
   Future<void> fetchCities() async {
-    final response = await http.get(
-        Uri.parse('https://diamond-platform-12038fd67b59.herokuapp.com/city'));
+    final response =
+        await http.get(Uri.parse('https://diamond-server.vercel.app/city'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['data'] != null && data['data'] is List) {
         setState(() {
           cities = List<String>.from(data['data'].map((city) =>
-          city['cityName'] != null
-              ? city['cityName'].toString()
-              : '')); // Convert to string, handle null
+              city['cityName'] != null
+                  ? city['cityName'].toString()
+                  : '')); // Convert to string, handle null
         });
       } else {
         throw Exception('Invalid city data format');
@@ -388,8 +402,8 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
   }
 
   Future<void> fetch_department() async {
-    final response = await http.get(Uri.parse(
-        "https://diamond-platform-12038fd67b59.herokuapp.com/department/department"));
+    final response = await http.get(
+        Uri.parse("https://diamond-server.vercel.app/department/department"));
     try {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
@@ -406,7 +420,7 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
 
   fetch_designation() async {
     var endpointUrl =
-        'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
     if (response.statusCode == 200) {
@@ -430,16 +444,16 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
     var _id = data["_id"];
-   // print(data);
+
     final url = Uri.parse(
-      'https://diamond-platform-12038fd67b59.herokuapp.com/company/profile/$_id', // Replace with your API URL
+      'https://diamond-server.vercel.app/company/profile/$_id', // Replace with your API URL
     );
 
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      print(data['data']);
+
       _nameController.text = data['data']['companyName'];
 
       _addressController.text = data['data']['adress'];
@@ -448,7 +462,7 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
       _gstController.text = data['data']['gstNumber'];
       _selecteddepartment = data['data']['department'];
       _selecteddesignation = data['data']['designation'];
-      getProfileImgURL = data['data']['companyImage']??"";
+      getProfileImgURL = data['data']['companyImage'] ?? "";
 
       return data['data'];
     } else {
@@ -461,12 +475,11 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var data1 = json.decode(prefs.getString("user_details")!);
-    print("Data Are: ${json.encode(data1)}");
+
     var _id = data1["_id"];
     var _password = data1["password"];
-    print("Passowrd :" + _password);
-    final String apiUrl =
-        'https://diamond-platform-12038fd67b59.herokuapp.com/company/${_id}';
+
+    final String apiUrl = 'https://diamond-server.vercel.app/company/${_id}';
 
     final Map<String, dynamic> data = {
       'companyName': _nameController.text,
@@ -491,15 +504,15 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
 
     if (response.statusCode == 200) {
       // Successful update, handle accordingly
-      print('Profile updated successfully');
+
       // Parse the response body as JSON
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       // Assuming there is a field named 'message' in the response
       final String message = responseData['message'];
 
-      // Print the message or any other relevant data
-      print('${response.body}');
+
+
       snackBar()
           .display(context, 'CompanyProfile Updated Sucessfully', Colors.blue);
     } else {
@@ -508,6 +521,3 @@ class _ProfilePageCompanyState extends State<ProfilePageCompany> {
     }
   }
 }
-
-
-

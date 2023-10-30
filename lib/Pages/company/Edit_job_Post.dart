@@ -10,9 +10,10 @@ import 'package:diamondplatform/Widget/snackbar.dart';
 import 'package:diamondplatform/model/model.dart';
 
 import '../../main.dart';
+
 class Edit_Job_Post extends StatefulWidget {
   JobPost? jobPost;
-  Edit_Job_Post({Key? key,required this.jobPost}) : super(key: key);
+  Edit_Job_Post({Key? key, required this.jobPost}) : super(key: key);
 
   @override
   State<Edit_Job_Post> createState() => _Job_PostState();
@@ -29,11 +30,19 @@ class _Job_PostState extends State<Edit_Job_Post> {
     dropdownValue2 = widget.jobPost!.workType;
     itemCount = widget.jobPost!.numberOfEmp;
     requiretype = widget.jobPost!.requirementTypes;
-    salary.text = widget.jobPost!.salary.toString() == "null" ? "0" : widget.jobPost!.salary.toString();
-    retail.text = widget.jobPost!.price.toString() == "null" ? "0":widget.jobPost!.price.toString();
+    salary.text = widget.jobPost!.salary.toString() == "null"
+        ? "0"
+        : widget.jobPost!.salary.toString();
+    retail.text = widget.jobPost!.price.toString() == "null"
+        ? "0"
+        : widget.jobPost!.price.toString();
     createJobPostDate = DateTime.parse(widget.jobPost!.createJobPostDate!);
     endJobPostDate = DateTime.parse(widget.jobPost!.endJobPostDate!);
-    selectedOption3 = widget.jobPost!.gender == "Male"? "Option 1" : widget.jobPost!.gender == "Female"? "Option 2" : "Option 3";
+    selectedOption3 = widget.jobPost!.gender == "Male"
+        ? "Option 1"
+        : widget.jobPost!.gender == "Female"
+            ? "Option 2"
+            : "Option 3";
     _selecteddepartment = widget.jobPost!.departmentName.toString();
     _selecteddesignation = widget.jobPost!.designationName.toString();
     //createJobPostDate = widget.jobPost
@@ -46,13 +55,18 @@ class _Job_PostState extends State<Edit_Job_Post> {
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      fieldHintText: isStartDate ?  "Select Create JobPost Date" : "Select End JobPost Date",
-      initialDate: isStartDate ? DateTime.now() : DateTime.now().add(const Duration(days: 7)),
+      fieldHintText: isStartDate
+          ? "Select Create JobPost Date"
+          : "Select End JobPost Date",
+      initialDate: isStartDate
+          ? DateTime.now()
+          : DateTime.now().add(const Duration(days: 7)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 20)),
     );
 
-    if (picked != null && picked != (isStartDate ? createJobPostDate : endJobPostDate)) {
+    if (picked != null &&
+        picked != (isStartDate ? createJobPostDate : endJobPostDate)) {
       setState(() {
         if (isStartDate) {
           createJobPostDate = picked;
@@ -62,6 +76,7 @@ class _Job_PostState extends State<Edit_Job_Post> {
       });
     }
   }
+
   List? diamondTypeList = [];
   List? workTypeList = [];
   List? department = [];
@@ -78,27 +93,25 @@ class _Job_PostState extends State<Edit_Job_Post> {
   TextEditingController salary = TextEditingController();
   TextEditingController retail = TextEditingController();
 
-  List<String> options = ['Option 1', 'Option 2','Option 3'];
+  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
   bool requiretype = false;
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Text( AppLocalizations.of(context)!.translate("Edit Job Post") ??"Edit Job Post"),
+        title: Text(AppLocalizations.of(context)!.translate("Edit Job Post") ??
+            "Edit Job Post"),
       ),
-      body:
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-
             BannerSlider(),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  width:MediaQuery.of(context).size.width * .8,
+                  width: MediaQuery.of(context).size.width * .8,
                   padding: const EdgeInsets.all(8.0),
                   child: DropdownButtonFormField<String>(
                     decoration: InputDecoration(
@@ -126,7 +139,8 @@ class _Job_PostState extends State<Edit_Job_Post> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(30),
@@ -140,10 +154,15 @@ class _Job_PostState extends State<Edit_Job_Post> {
                           selectedOption3 = newValue!;
                         });
                       },
-                      items: options.map<DropdownMenuItem<String>>((String value) {
+                      items:
+                          options.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: value == "Option 1" ? Image.asset("assets/male.png"): value == "Option 2" ? Image.asset("assets/female.png") :Image.asset("assets/both.png"),
+                          child: value == "Option 1"
+                              ? Image.asset("assets/male.png")
+                              : value == "Option 2"
+                                  ? Image.asset("assets/female.png")
+                                  : Image.asset("assets/both.png"),
                         );
                       }).toList(),
                     ),
@@ -162,14 +181,14 @@ class _Job_PostState extends State<Edit_Job_Post> {
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
                 ),
-                validator: (value){
-                  if(value!.isEmpty){
+                validator: (value) {
+                  if (value!.isEmpty) {
                     return "please select designation";
                   }
                   return null;
                 },
                 value: _selecteddesignation,
-                hint:  Text("${_selecteddesignation}").tr(),
+                hint: Text("${_selecteddesignation}").tr(),
                 onChanged: (newValue) {
                   setState(() {
                     _selecteddesignation = newValue!;
@@ -183,26 +202,33 @@ class _Job_PostState extends State<Edit_Job_Post> {
                 }).toList(),
               ),
             ),
-             Center(child:
-              Text( AppLocalizations.of(context)!.translate("How Many Employee?") ?? "How Many Employee?"
-              ,style: TextStyle(fontSize: 20),),),
-            const SizedBox(height: 20,),
+            Center(
+              child: Text(
+                AppLocalizations.of(context)!.translate("How Many Employee?") ??
+                    "How Many Employee?",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Center(
               child: Container(
-
                 width: MediaQuery.of(context).size.width * .7,
                 height: MediaQuery.of(context).size.height * .05,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                       width: MediaQuery.of(context).size.width * .2,
+                      width: MediaQuery.of(context).size.width * .2,
                       decoration: BoxDecoration(
-                        color: Colors.black
-                            ,borderRadius: BorderRadius.circular(20)
-                      ),
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20)),
                       child: IconButton(
-                        icon: const Icon(Icons.remove,color: Colors.white,),
+                        icon: const Icon(
+                          Icons.remove,
+                          color: Colors.white,
+                        ),
                         onPressed: () {
                           setState(() {
                             if (itemCount > 1) {
@@ -213,20 +239,20 @@ class _Job_PostState extends State<Edit_Job_Post> {
                       ),
                     ),
                     Text(
-
                       itemCount.toString(),
-                      style: const TextStyle(
-                          fontSize: 16, color: Colors.black87),
+                      style:
+                          const TextStyle(fontSize: 16, color: Colors.black87),
                     ),
                     Container(
-
-                        width: MediaQuery.of(context).size.width * .2,
-                        decoration: BoxDecoration(
-                            color: Colors.black
-                            ,borderRadius: BorderRadius.circular(20)
-                        ),
+                      width: MediaQuery.of(context).size.width * .2,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20)),
                       child: IconButton(
-                        icon: const Icon(Icons.add,color: Colors.white,),
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                         onPressed: () {
                           setState(() {
                             itemCount++;
@@ -236,15 +262,16 @@ class _Job_PostState extends State<Edit_Job_Post> {
                     ),
                   ],
                 ),
-
               ),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       requiretype = false;
                     });
@@ -253,18 +280,25 @@ class _Job_PostState extends State<Edit_Job_Post> {
                     width: MediaQuery.of(context).size.width * .35,
                     height: MediaQuery.of(context).size.height * .07,
                     decoration: BoxDecoration(
-                      color: requiretype == false ? Colors.redAccent:Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      border: requiretype == true ? Border.all() : null
-                    ),
+                        color: requiretype == false
+                            ? Colors.redAccent
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        border: requiretype == true ? Border.all() : null),
                     alignment: Alignment.center,
-                    child: Text( AppLocalizations.of(context)!.translate("Fixed") ??"Fixed",style: TextStyle(
-                      fontSize: 20,color: requiretype ==false?Colors.white :Colors.black
-                    ),) ,
+                    child: Text(
+                      AppLocalizations.of(context)!.translate("Fixed") ??
+                          "Fixed",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: requiretype == false
+                              ? Colors.white
+                              : Colors.black),
+                    ),
                   ),
                 ),
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       requiretype = true;
                     });
@@ -273,46 +307,48 @@ class _Job_PostState extends State<Edit_Job_Post> {
                     width: MediaQuery.of(context).size.width * .35,
                     height: MediaQuery.of(context).size.height * .07,
                     decoration: BoxDecoration(
-                        color: requiretype == true ? Colors.red:Colors.white,
-    border: requiretype == false ? Border.all() : null,//color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(30)
-                    ),
+                        color: requiretype == true ? Colors.red : Colors.white,
+                        border: requiretype == false
+                            ? Border.all()
+                            : null, //color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(30)),
                     alignment: Alignment.center,
-                    child:Text( AppLocalizations.of(context)!.translate("Retail") ??"Retail",style: TextStyle(
-                        fontSize: 20,color: requiretype ==true?Colors.white :Colors.black
-                    ),),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate("Retail") ??
+                          "Retail",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: requiretype == true
+                              ? Colors.white
+                              : Colors.black),
+                    ),
                   ),
                 ),
-
               ],
             ),
-            requiretype == false ? Container(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                controller: salary,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-
-                  hintText: "Enter Salary",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20)
+            requiretype == false
+                ? Container(
+                    padding: const EdgeInsets.all(20),
+                    child: TextFormField(
+                      controller: salary,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          hintText: "Enter Salary",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
                   )
-                ),
-
-              ),
-            ) :Container(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                controller: retail,
-                  keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    hintText: "Enter Price per piece",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    )
-                ),
-              ),
-            ),
+                : Container(
+                    padding: const EdgeInsets.all(20),
+                    child: TextFormField(
+                      controller: retail,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          hintText: "Enter Price per piece",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                  ),
             InkWell(
               onTap: () => _selectDate(context, true),
               child: Container(
@@ -328,82 +364,81 @@ class _Job_PostState extends State<Edit_Job_Post> {
                   createJobPostDate != null
                       ? "${createJobPostDate!.toLocal()}".split(' ')[0]
                       : 'Select Create Job Post Date',
-                style: const TextStyle(
-                  fontSize: 18
-                ),),
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
             ),
             const SizedBox(
               height: 10,
             ),
             // End Job Post Date Picker
-        InkWell(
-          onTap: () => _selectDate(context, false),
-          child: Container(
-            width: MediaQuery.of(context).size.width * .9,
-            height: MediaQuery.of(context).size.height * .06,
-            padding: const EdgeInsets.all(10),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(20),
+            InkWell(
+              onTap: () => _selectDate(context, false),
+              child: Container(
+                width: MediaQuery.of(context).size.width * .9,
+                height: MediaQuery.of(context).size.height * .06,
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  endJobPostDate != null
+                      ? "${endJobPostDate!.toLocal()}".split(' ')[0]
+                      : 'Select End Job Post Date',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
             ),
-            child: Text(
-              endJobPostDate != null
-                  ? "${endJobPostDate!.toLocal()}".split(' ')[0]
-                  : 'Select End Job Post Date',
-            style: const TextStyle(fontSize: 18),),
-          ),),
-      const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             // ... the rest of your existing code ...
-      SizedBox(
+            SizedBox(
               height: MediaQuery.of(context).size.height * .07,
               width: MediaQuery.of(context).size.width * .36,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                    ),
+                        borderRadius: BorderRadius.circular(20)),
                     backgroundColor: Colors.black,
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     submitPost();
-                  }, child: Text( AppLocalizations.of(context)!.translate("Update Post") ??"Update Post",style: TextStyle(fontSize: 17),)),
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.translate("Update Post") ??
+                        "Update Post",
+                    style: TextStyle(fontSize: 17),
+                  )),
             )
           ],
         ),
       ),
-
-
-      );
-
+    );
   }
-  submitPost()async{
-    if(dropdownValue1 == null){
+
+  submitPost() async {
+    if (dropdownValue1 == null) {
       snackBar().display(context, "please select Diamond type", Colors.red);
-    }
-    else if(dropdownValue2 == null){
+    } else if (dropdownValue2 == null) {
       snackBar().display(context, "please select work type", Colors.red);
-    }
-    else if(requiretype == false && salary.text.isEmpty){
+    } else if (requiretype == false && salary.text.isEmpty) {
       snackBar().display(context, "please enter a salary", Colors.red);
-    }
-    else if(requiretype == true && retail.text.isEmpty){
+    } else if (requiretype == true && retail.text.isEmpty) {
       snackBar().display(context, "please enter a price", Colors.red);
-    }
-    else {
+    } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
-      requiretype == true ? print("Retail : ${retail.text}") : print(
-          "Salary : ${salary.text}");
 
 
-       print(salary.text=="null" ? true : false);
-      int parsedSalary = salary.text=="null" ? 0 : int.parse(salary.text);
+
+      int parsedSalary = salary.text == "null" ? 0 : int.parse(salary.text);
       //String retailText = retail.text.trim();
-      int parsedretail = retail.text=="null" ? 0 : int.parse(retail.text);
+      int parsedretail = retail.text == "null" ? 0 : int.parse(retail.text);
       var body1 = {
-        "companyId":data["_id"],
+        "companyId": data["_id"],
         "employeerName": data["companyName"],
         "departmentName": _selecteddepartment,
         "designationName": _selecteddesignation,
@@ -419,7 +454,7 @@ class _Job_PostState extends State<Edit_Job_Post> {
         "gender": selectedOption3 == "Option 1" ? "Male" : "Female"
       };
       var body2 = {
-        "companyId":data["_id"],
+        "companyId": data["_id"],
         "employeerName": data["companyName"],
         "departmentName": data["department"],
         "designationName": data["designation"],
@@ -433,7 +468,6 @@ class _Job_PostState extends State<Edit_Job_Post> {
         "createJobPostDate": createJobPostDate.toString(),
         "endJobPostDate": endJobPostDate.toString(),
         "gender": selectedOption3 == "Option 1" ? "Male" : "Female"
-
       };
       var body;
       if (requiretype == false) {
@@ -442,25 +476,25 @@ class _Job_PostState extends State<Edit_Job_Post> {
         body = body2;
       }
       try {
-        var response = await http.put(Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/jobpost/jobpost/${widget.jobPost!.id}"),
+        var response = await http.put(
+            Uri.parse(
+                "https://diamond-server.vercel.app/jobpost/jobpost/${widget.jobPost!.id}"),
             body: body);
         var data = json.decode(response.body);
         if (data["statusCode"] == 200) {
-          snackBar().display(context, "Job post updated Successfully", Colors.green);
+          snackBar()
+              .display(context, "Job post updated Successfully", Colors.green);
         }
-        //print(response.statusCode);
-      }
-      catch (e) {
-      }
+
+      } catch (e) {}
     }
-   }
+  }
+
   Future<void> diamondType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/diamondtype/diamondtype"),
+        Uri.parse("https://diamond-server.vercel.app/diamondtype/diamondtype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
@@ -478,8 +512,7 @@ class _Job_PostState extends State<Edit_Job_Post> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/worktype/worktype"),
+        Uri.parse("https://diamond-server.vercel.app/worktype/worktype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
@@ -492,40 +525,39 @@ class _Job_PostState extends State<Edit_Job_Post> {
       }
     } catch (e) {}
   }
-  Future<void> fetch_department() async{
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/department/department"));
-    try{
-      if(response.statusCode == 200){
+
+  Future<void> fetch_department() async {
+    final response = await http.get(
+        Uri.parse("https://diamond-server.vercel.app/department/department"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
           department = data["data"];
         });
       }
-
-    }
-    catch(e){
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
   }
-  fetch_designation()async{
-    var endpointUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+
+  fetch_designation() async {
+    var endpointUrl =
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var data = json.decode(response.body);
       setState(() {
         designation = data["data"];
       });
-
-    }
-    else{
+    } else {
       setState(() {
         designation = [];
       });
       //  designation = [];
     }
-
   }
 }

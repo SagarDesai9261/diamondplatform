@@ -15,23 +15,26 @@ import 'package:diamondplatform/Registraction_Pages/Register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:diamondplatform/Widget/snackbar.dart';
 
+import '../Registraction_Pages/Re-Register-employee.dart';
+import '../Widget/custom_dialog_box.dart';
 import '../main.dart';
-class LanguageService {
-  static const String apiUrl =
-      'https://diamond-platform-12038fd67b59.herokuapp.com/language';
 
-   Future<List<dynamic>> fetchLanguageCodes() async {
+class LanguageService {
+  static const String apiUrl = 'https://diamond-server.vercel.app/language';
+
+  Future<List<dynamic>> fetchLanguageCodes() async {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      final  languages = data['data'];
-      print(languages);
+      final languages = data['data'];
+
       return languages;
     } else {
       throw Exception('Failed to fetch language codes');
     }
   }
 }
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
   @override
@@ -54,14 +57,19 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _languages = LanguageService().fetchLanguageCodes();
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop:() {  SystemNavigator.pop(); return Future.value(false); },
+      onWillPop: () {
+        SystemNavigator.pop();
+        return Future.value(false);
+      },
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text(AppLocalizations.of(context)!.translate('Login')??"Login"),
+          title:
+              Text(AppLocalizations.of(context)!.translate('Login') ?? "Login"),
           actions: [
             IconButton(
               onPressed: () {
@@ -80,9 +88,17 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 50,
                 ),
-                const CircleAvatar(
-                  backgroundImage: AssetImage('assets/logo.png'),
-                  maxRadius: 120,
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                  //  shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage('assets/logo.png'),
+                      fit: BoxFit
+                          .cover, // You can change this property to control how the image is scaled
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -100,7 +116,9 @@ class _LoginPageState extends State<LoginPage> {
                         Icons.phone_android,
                         color: Colors.black,
                       ),
-                      hintText: AppLocalizations.of(context)!.translate('Enter your Mobile Number') ?? "Enter your Mobile Number",
+                      hintText: AppLocalizations.of(context)!
+                              .translate('Enter your Mobile Number') ??
+                          "Enter your Mobile Number",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -127,7 +145,9 @@ class _LoginPageState extends State<LoginPage> {
                         Icons.security,
                         color: Colors.black,
                       ),
-                      hintText: AppLocalizations.of(context)!.translate('Enter your password')??"Enter your password",
+                      hintText: AppLocalizations.of(context)!
+                              .translate('Enter your password') ??
+                          "Enter your password",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -183,13 +203,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(
-                        backgroundColor: Colors.white,
-                        color: Colors.black,
-                      )
+                              backgroundColor: Colors.white,
+                              color: Colors.black,
+                            )
                           : Text(
-                        AppLocalizations.of(context)!.translate('Login')??"Login",
-                        style: const TextStyle(fontSize: 18.0),
-                      ),
+                              AppLocalizations.of(context)!
+                                      .translate('Login') ??
+                                  "Login",
+                              style: const TextStyle(fontSize: 18.0),
+                            ),
                     ),
                   ),
                 ),
@@ -204,7 +226,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   icon: const Icon(Icons.login),
-                  label:  Text(AppLocalizations.of(context)!.translate('Sign in with Google') ?? "Sign in with Google"),
+                  label: Text(AppLocalizations.of(context)!
+                          .translate('Sign in with Google') ??
+                      "Sign in with Google"),
                 ),
                 const SizedBox(
                   height: 50,
@@ -213,7 +237,9 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.translate('Create New Account....') ?? "Create New account....",
+                      AppLocalizations.of(context)!
+                              .translate('Create New Account....') ??
+                          "Create New account....",
                       style: const TextStyle(fontSize: 14),
                     ),
                     InkWell(
@@ -224,7 +250,9 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => RegistrationPage()));
                       },
                       child: Text(
-                        AppLocalizations.of(context)!.translate('Register Now') ?? "Register now",
+                        AppLocalizations.of(context)!
+                                .translate('Register Now') ??
+                            "Register now",
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -243,49 +271,55 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login() async {
     var response = await http.post(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/employee/login"),
+        Uri.parse("https://diamond-server.vercel.app/employee/login"),
         body: {"mobileNumber": mobile.text, "password": password.text});
-    var data = json.decode(response.body);
-    print(data);
+    Map<String,dynamic> data = json.decode(response.body);
+
     if (data["statusCode"] == 403) {
       final response1 = await http.post(
-          Uri.parse(
-              "https://diamond-platform-12038fd67b59.herokuapp.com/company/login"),
+          Uri.parse("https://diamond-server.vercel.app/company/login"),
           body: {"mobileNumber": mobile.text, "password": password.text});
       var jsonResponse = jsonDecode(response1.body);
-      print(jsonResponse);
+
       if (jsonResponse['statusCode'] == 402 ||
+          jsonResponse['statusCode'] == 500 ||
           jsonResponse['statusCode'] == 403) {
         snackBar s = snackBar();
-        s.display(context, 'Mobile Number And Password Is Invalid', Colors.red);
+        showDialog(context: context,
+            builder: (BuildContext context){
+              return CustomDialogBox(
+                title: "Your Profile is Rejected",
+                descriptions: "Reason :- ${jsonResponse['deniedReason']}",
+                text: "Yes",
+              );
+            }
+        );
+         //s.display(context, 'Mobile Number And Password Is Invalid', Colors.red);
         setState(() {
           _isLoading = false;
         });
-      }
-      else if(jsonResponse["statusCode"] == 401 || data["statusCode"] == 401){
+      } else if (jsonResponse["statusCode"] == 401 ||
+          data["statusCode"] == 401) {
         _onAlertButtonPressed(context);
         setState(() {
           _isLoading = false;
         });
-      }
-
-      else {
+      } else {
         Map<String, dynamic> decodeToken =
-        JwtDecoder.decode(jsonResponse["token"]);
+            JwtDecoder.decode(jsonResponse["token"]);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_details', jsonEncode(decodeToken));
         await prefs.setString("isLogin", "Yes");
         await prefs.setString("isEmployee", "false");
         await prefs.setString("token", jsonResponse["token"]);
         var _id = decodeToken["_id"];
-        print(_id);
+
         final String apiUrl =
-            'https://diamond-platform-12038fd67b59.herokuapp.com/company/${_id}';
+            'https://diamond-server.vercel.app/company/${_id}';
         var token = jsonResponse["token"];
         var notificationtoken = prefs.getString("NotificationToken");
         final Map<String, dynamic> datatoken = {
-          'token':notificationtoken.toString()
+          'token': notificationtoken.toString()
         };
         var response2 = await http.put(
           Uri.parse(apiUrl),
@@ -295,40 +329,59 @@ class _LoginPageState extends State<LoginPage> {
           },
           body: json.encode(datatoken),
         );
-        if(response2.statusCode == 200){
+        if (response2.statusCode == 200) {
           snackBar().display(context, "Login Successfully", Colors.green);
 
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      Home_Page_company()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => Home_Page_company()));
         }
-
       }
-    }
-    else if(data["statusCode"]==401){
-      print("hello");
-      _onAlertButtonPressed(context);
+    } else if (data["statusCode"] == 402) {
+      snackBar s = snackBar();
+      List reson  = data["deniedReason"];
+      print(reson.length);
+      //s.display(context, 'Mobile Number And Password Is Invalid', Colors.red);
+      showDialog(context: context,
+          builder: (BuildContext context){
+            return CustomDialogBox(
+              title: "Your Profile is Rejected",
+              descriptions: "Reason :- ${data["deniedReason"][reson.length-1]}",
+              text: "Yes",
+              mobile: mobile.text,
+            );
+          }
+      );
+     // s.display(context, 'Mobile Number And Password Is Invalid', Colors.red);
+      setState(() {
+        _isLoading = false;
+      });
+    } else if (data["statusCode"] == 401 || data["statusCode"] == 406 ) {
 
+      _onAlertButtonPressed(context);
     }
+    else if (data["statusCode"] == 405) {
+      snackBar s = snackBar();
+      s.display(context, 'Mobile Number And Password Is Invalid', Colors.red);
+     // _onAlertButtonPressed(context);
+    }
+
+
     else if (data["statusCode"] == 200) {
       var jsonResponse = jsonDecode(response.body);
       Map<String, dynamic> decodeToken =
-      JwtDecoder.decode(jsonResponse["token"]);
+          JwtDecoder.decode(jsonResponse["token"]);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_details', jsonEncode(decodeToken));
       await prefs.setString("isEmployee", "true");
       await prefs.setString("isLogin", "Yes");
       await prefs.setString("token", jsonResponse["token"]);
       var _id = decodeToken["_id"];
-      print(_id);
-      final String apiUrl =
-            'https://diamond-platform-12038fd67b59.herokuapp.com/employee/${_id}';
+
+      final String apiUrl = 'https://diamond-server.vercel.app/employee/${_id}';
       var token = jsonResponse["token"];
       var notificationtoken = prefs.getString("NotificationToken");
       final Map<String, dynamic> datatoken = {
-        'token':notificationtoken.toString()
+        'token': notificationtoken.toString()
       };
       var response2 = await http.put(
         Uri.parse(apiUrl),
@@ -338,16 +391,12 @@ class _LoginPageState extends State<LoginPage> {
         },
         body: json.encode(datatoken),
       );
-      if(response2.statusCode == 200){
+      if (response2.statusCode == 200) {
         snackBar().display(context, "Login Successfully", Colors.green);
-        print(prefs.getStringList("notification_data"));
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    Home_page_employee()));
-      }
 
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => Home_page_employee()));
+      }
     }
   }
 
@@ -356,7 +405,9 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.translate('select_language') ?? "Select Language"),
+          title: Text(
+              AppLocalizations.of(context)!.translate('select_language') ??
+                  "Select Language"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,15 +421,15 @@ class _LoginPageState extends State<LoginPage> {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     final List? languages = snapshot.data;
-                    print(languages);
+
                     return Column(
                       children: [
-                        for(var i in languages!) ...[
-                         _buildLanguageButton(context, Locale(i["code"]), i["name"])
+                        for (var i in languages!) ...[
+                          _buildLanguageButton(
+                              context, Locale(i["code"]), i["name"])
                         ]
                       ],
                     );
-
                   }
                 },
               ),
@@ -392,48 +443,54 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildLanguageButton(
       BuildContext context, Locale locale, String language) {
     return TextButton(
-      onPressed: () async{
+      onPressed: () async {
         AppLocalizations.of(context)!.setLocale(locale);
-        print(locale.languageCode);
-        /*SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('selectedLanguage', locale.languageCode);*/
-        setState(() {
 
-        });
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('selectedLanguage', locale.languageCode);
+        setState(() {});
         Navigator.pop(context); // Close the dialog
-
       },
-      child: Text(AppLocalizations.of(context)!.translate(language) ?? language),
+      child:
+          Text(AppLocalizations.of(context)!.translate(language) ?? language),
     );
   }
+
   Future<void> _handleSignIn() async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
 
-      final UserCredential authResult = await _auth.signInWithCredential(credential);
+      final UserCredential authResult =
+          await _auth.signInWithCredential(credential);
       final User? user = authResult.user;
 
       setState(() {
         _user = user;
-        print(_user);
+
       });
     } catch (error) {
       print("Google Sign-In Error: $error");
     }
   }
+
   _onAlertButtonPressed(context) {
-    print("hello");
+
     Alert(
       context: context,
       type: AlertType.warning,
-      title:AppLocalizations.of(context)!.translate('Under Verifing')??"Under Verifing",
-      desc: AppLocalizations.of(context)!.translate('Your Profile is under Verifing')??"Your Profile is under Verifing",
+      title: AppLocalizations.of(context)!.translate('Under Verifing') ??
+          "Under Verifing",
+      desc: AppLocalizations.of(context)!
+              .translate('Your Profile is under Verifing') ??
+          "Your Profile is under Verifing",
       buttons: [
         DialogButton(
           child: Text(
@@ -446,4 +503,5 @@ class _LoginPageState extends State<LoginPage> {
       ],
     ).show();
   }
+
 }

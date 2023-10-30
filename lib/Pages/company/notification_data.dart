@@ -85,7 +85,7 @@ class _NotificationPageState extends State<NotificationPage> {
       else {
         return seconds.toString() + " seconds ago".toString();
       }
-    //  print("$years year(s) $months month(s) $days day(s) $hours hour(s) $minutes minute(s) $seconds second(s).");
+
     }
 
     return Scaffold(

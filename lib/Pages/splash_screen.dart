@@ -5,7 +5,7 @@ import 'package:diamondplatform/Pages/check_login_page.dart';
 // Import your main screen
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+ //  SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -23,12 +23,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
       body: Center(
-        child: CircleAvatar(
-          backgroundImage: AssetImage('assets/logo.png'),
-          maxRadius: 120,
-        ), // Load the splash image from assets
+        child: Container(
+          width: MediaQuery.of(context).size.width * .8,
+          height: MediaQuery.of(context).size.width * .8,
+          decoration: BoxDecoration(
+           // shape: BoxShape.circle,
+            image: DecorationImage(
+              image: AssetImage('assets/logo.png'),
+              fit: BoxFit.cover, // You can change this property to control how the image is scaled
+            ),
+          ),
+        ),
       ),
     );
   }

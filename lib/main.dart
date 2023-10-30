@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -30,14 +31,17 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Firebase local notification plugin
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   // Firebase messaging
@@ -47,21 +51,16 @@ void main() async {
     sound: true,
   );
 
-
   final languageService = LanguageService();
   final localizationService = LocalizationService();
-
   final codes = await languageService.fetchLanguageCodes();
-  final data = await localizationService.fetchLocalizationData();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  var lan = prefs.getString("selectedLanguage") ?? "";
-
-  //Locale datalanguage =  lan == null ? Locale("en") : Locale(lan);
+  final data1 = await localizationService.fetchLocalizationData();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AppLocalizations(Locale("en"),codes,data), // Initialize with the default locale
+          create: (context) => AppLocalizations(
+              Locale("en"), codes, data1), // Initialize with the default locale
         ),
         ChangeNotifierProvider(create: (context) => BannerDataProvider()),
         ChangeNotifierProvider(create: (context) => CurrentSlideProvider()),
@@ -79,14 +78,15 @@ void main() async {
 }
 
 class LanguageService {
-  static const String apiUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/language';
+  static const String apiUrl = 'https://diamond-server.vercel.app/language';
 
   Future<Map<String, dynamic>> fetchLanguageCodes() async {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final languages = data['data'] as List;
-      return Map.fromIterable(languages, key: (lang) => lang['code'], value: (lang) => lang['name']);
+      return Map.fromIterable(languages,
+          key: (lang) => lang['code'], value: (lang) => lang['name']);
     } else {
       throw Exception('Failed to fetch language codes');
     }
@@ -94,7 +94,7 @@ class LanguageService {
 }
 
 class LocalizationService {
-  static const String apiUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/keys/keys';
+  static const String apiUrl = 'https://diamond-server.vercel.app/keys/keys';
 
   Future<Map<String, Map<String, dynamic>>> fetchLocalizationData() async {
     final response = await http.get(Uri.parse(apiUrl));
@@ -121,56 +121,55 @@ class AppLocalizations extends ChangeNotifier {
 
   static List<Locale> get supportedLocales {
     return [
-      Locale('en'),      // English
-      Locale('es'),      // Spanish
-      Locale('fr'),      // French
-      Locale('de'),      // German
-      Locale('it'),      // Italian
-      Locale('pt'),      // Portuguese
-      Locale('zh'),      // Chinese (Simplified)
-      Locale('ja'),      // Japanese
-      Locale('ko'),      // Korean
-      Locale('ru'),      // Russian
-      Locale('ar'),      // Arabic
-      Locale('hi'),      // Hindi
-      Locale('tr'),      // Turkish
-      Locale('nl'),      // Dutch
-      Locale('sv'),      // Swedish
-      Locale('no'),      // Norwegian
-      Locale('da'),      // Danish
-      Locale('fi'),      // Finnish
-      Locale('el'),      // Greek
-      Locale('he'),      // Hebrew
-      Locale('th'),      // Thai
-      Locale('vi'),      // Vietnamese
-      Locale('cs'),      // Czech
-      Locale('hu'),      // Hungarian
-      Locale('pl'),      // Polish
-      Locale('ro'),      // Romanian
-      Locale('sk'),      // Slovak
-      Locale('sl'),      // Slovenian
-      Locale('bg'),      // Bulgarian
-      Locale('uk'),      // Ukrainian
-      Locale('hr'),      // Croatian
-      Locale('sr'),      // Serbian
-      Locale('et'),      // Estonian
-      Locale('lv'),      // Latvian
-      Locale('lt'),      // Lithuanian
-      Locale('ms'),      // Malay
-      Locale('id'),      // Indonesian
-      Locale('fil'),     // Filipino
-      Locale('sw'),      // Swahili
-      Locale('ta'),      // Tamil
-      Locale('te'),      // Telugu
-      Locale('ml'),      // Malayalam
-      Locale('kn'),      // Kannada
-      Locale('gu'),      // Gujarati
-      Locale('mr'),      // Marathi
-      Locale('bn'),      // Bengali
-      Locale('pa'),      // Punjabi
-      Locale('ur'),      // Urdu
-    ]
-    ;
+      Locale('en'), // English
+      Locale('es'), // Spanish
+      Locale('fr'), // French
+      Locale('de'), // German
+      Locale('it'), // Italian
+      Locale('pt'), // Portuguese
+      Locale('zh'), // Chinese (Simplified)
+      Locale('ja'), // Japanese
+      Locale('ko'), // Korean
+      Locale('ru'), // Russian
+      Locale('ar'), // Arabic
+      Locale('hi'), // Hindi
+      Locale('tr'), // Turkish
+      Locale('nl'), // Dutch
+      Locale('sv'), // Swedish
+      Locale('no'), // Norwegian
+      Locale('da'), // Danish
+      Locale('fi'), // Finnish
+      Locale('el'), // Greek
+      Locale('he'), // Hebrew
+      Locale('th'), // Thai
+      Locale('vi'), // Vietnamese
+      Locale('cs'), // Czech
+      Locale('hu'), // Hungarian
+      Locale('pl'), // Polish
+      Locale('ro'), // Romanian
+      Locale('sk'), // Slovak
+      Locale('sl'), // Slovenian
+      Locale('bg'), // Bulgarian
+      Locale('uk'), // Ukrainian
+      Locale('hr'), // Croatian
+      Locale('sr'), // Serbian
+      Locale('et'), // Estonian
+      Locale('lv'), // Latvian
+      Locale('lt'), // Lithuanian
+      Locale('ms'), // Malay
+      Locale('id'), // Indonesian
+      Locale('fil'), // Filipino
+      Locale('sw'), // Swahili
+      Locale('ta'), // Tamil
+      Locale('te'), // Telugu
+      Locale('ml'), // Malayalam
+      Locale('kn'), // Kannada
+      Locale('gu'), // Gujarati
+      Locale('mr'), // Marathi
+      Locale('bn'), // Bengali
+      Locale('pa'), // Punjabi
+      Locale('ur'), // Urdu
+    ];
   }
 
   static AppLocalizations? of(BuildContext context) {
@@ -188,10 +187,11 @@ class AppLocalizations extends ChangeNotifier {
   }
 
   static LocalizationsDelegate<AppLocalizations> delegate =
-  _AppLocalizationsDelegate();
+      _AppLocalizationsDelegate();
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   final LanguageService languageService = LanguageService();
   final LocalizationService localizationService = LocalizationService();
 
@@ -204,7 +204,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   Future<AppLocalizations> load(Locale locale) async {
     final codes = await languageService.fetchLanguageCodes();
     final Map<String, Map<String, dynamic>> data =
-    await localizationService.fetchLocalizationData();
+        await localizationService.fetchLocalizationData();
     return AppLocalizations(locale, codes, data);
   }
 
@@ -263,8 +263,7 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    FirebaseMessaging.onMessageOpenedApp
-        .listen((RemoteMessage message) async {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print('A new message open app event was published');
       List<String> list;
@@ -324,8 +323,10 @@ class _MyAppState extends State<MyApp> {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            locale: appLocalizations.locale, // Use the current locale from the provider
-            themeMode: ThemeMode.system, // Automatically switch between light and dark based on system
+            locale: appLocalizations
+                .locale, // Use the current locale from the provider
+            themeMode: ThemeMode
+                .system, // Automatically switch between light and dark based on system
             darkTheme: ThemeData.dark(), // Dark theme data
             theme: ThemeData(
               appBarTheme: AppBarTheme(

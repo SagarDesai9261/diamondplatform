@@ -11,12 +11,14 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:diamondplatform/Pages/Login_Page.dart';
 import 'package:diamondplatform/Widget/snackbar.dart';
+
 class EmployeeForm extends StatefulWidget {
   final bool isEmployee; // Add this parameter
   const EmployeeForm({required this.isEmployee, Key? key}) : super(key: key);
   @override
   State<EmployeeForm> createState() => _EmployeeFormState();
 }
+
 class _EmployeeFormState extends State<EmployeeForm> {
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
     fetchCities();
     fetch_department();
   }
+
   List? department = [];
   List? industry = [];
   List? designation = [];
@@ -58,8 +61,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
     setState(() {
       if (pickedFile != null) {
         _selectedImage = File(pickedFile.path);
-      } else {
-      }
+      } else {}
     });
   }
 
@@ -86,8 +88,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
             jsonResponse['iamge_path']; // Correct the key to "iamge_path"
 
         // Now you can set your image using the 'imagePath' variable
-      } else {
-      }
+      } else {}
     } finally {
       setState(() {
         _isUploading = false;
@@ -100,8 +101,8 @@ class _EmployeeFormState extends State<EmployeeForm> {
   String? selectedCity = 'Bhavnagar';
 
   Future<void> fetchCities() async {
-    final response = await http.get(
-        Uri.parse('https://diamond-platform-12038fd67b59.herokuapp.com/city'));
+    final response =
+        await http.get(Uri.parse('https://diamond-server.vercel.app/city'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -124,11 +125,9 @@ class _EmployeeFormState extends State<EmployeeForm> {
   @override
   //POST API
 
-
   // employee  Data register
   Future<void> postData() async {
-    final url = Uri.parse(
-        'https://diamond-platform-12038fd67b59.herokuapp.com/employee');
+    final url = Uri.parse('https://diamond-server.vercel.app/employee');
 
     final headers = {
       'Content-Type': 'application/json',
@@ -146,9 +145,11 @@ class _EmployeeFormState extends State<EmployeeForm> {
       'department': _selecteddepartment,
       'designation': _selecteddesignation,
       'password': _passwordController.text,
-      'isEmployee':widget.isEmployee,
-      'isAdminApproval':false,
-      'industry':_selectIndustry
+      'isEmployee': widget.isEmployee,
+      'isAdminApproval': false,
+      'status' : ["Pending"],
+      'deniedReason': [],
+      'industry': _selectIndustry
     });
 
     showDialog(
@@ -177,13 +178,13 @@ class _EmployeeFormState extends State<EmployeeForm> {
       Navigator.pop(context); // Close the progress dialog
 
       if (response.statusCode == 200) {
-
-
         // ignore: use_build_context_synchronously
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text( AppLocalizations.of(context)!.translate('Registration Successfully')??"Registration Successfully"),
+            title: Text(AppLocalizations.of(context)!
+                    .translate('Registration Successfully') ??
+                "Registration Successfully"),
             actions: [
               TextButton(
                 onPressed: () {
@@ -233,16 +234,19 @@ class _EmployeeFormState extends State<EmployeeForm> {
           TextFormField(
             controller: _nameController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Enter your Name'),
+              labelText:
+                  AppLocalizations.of(context)!.translate('Enter your Name'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide:
-                    const BorderSide(color: Colors.black), // Specify border color
+                borderSide: const BorderSide(
+                    color: Colors.black), // Specify border color
               ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a name')??"Please enter a name";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a name') ??
+                    "Please enter a name";
               }
               return null;
             },
@@ -251,38 +255,45 @@ class _EmployeeFormState extends State<EmployeeForm> {
           TextFormField(
             controller: _addressController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Enter your Address'),
+              labelText:
+                  AppLocalizations.of(context)!.translate('Enter your Address'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide:
-                    const BorderSide(color: Colors.black), // Specify border color
+                borderSide: const BorderSide(
+                    color: Colors.black), // Specify border color
               ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a address') ??"Please enter a address";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a address') ??
+                    "Please enter a address";
               }
               return null;
             },
           ),
           const SizedBox(height: 10),
           DropdownButtonFormField<String>(
-              value: selectedCity ?? "choose the city",
-              items: cities.map((String city) { return DropdownMenuItem<String>(value:city,child:Text( AppLocalizations.of(context)!.translate(city) ?? city));}).toList(),
-              onChanged: (value){
-                setState(() {
-                  selectedCity = value;
-                });
-
-              },
+            value: selectedCity ?? "choose the city",
+            items: cities.map((String city) {
+              return DropdownMenuItem<String>(
+                  value: city,
+                  child: Text(
+                      AppLocalizations.of(context)!.translate(city) ?? city));
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedCity = value;
+              });
+            },
             decoration: InputDecoration(
-
               hintText: "Select the city",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: Colors.black),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: Colors.black),
+              ),
             ),
-          ),),
+          ),
           const SizedBox(height: 10),
           TextFormField(
             controller: _contactNo1Controller,
@@ -291,19 +302,23 @@ class _EmployeeFormState extends State<EmployeeForm> {
               LengthLimitingTextInputFormatter(10),
             ],
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Enter your Contact No'),
+              labelText: AppLocalizations.of(context)!
+                  .translate('Enter your Contact No'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide:
-                    const BorderSide(color: Colors.black), // Specify border color
+                borderSide: const BorderSide(
+                    color: Colors.black), // Specify border color
               ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a contact number') ??"Please enter a contact number";
-              }
-              else if(value.length < 10){
-                return  AppLocalizations.of(context)!.translate('Please enter valid mobile number')??"Please enter valid mobile number";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a contact number') ??
+                    "Please enter a contact number";
+              } else if (value.length < 10) {
+                return AppLocalizations.of(context)!
+                        .translate('Please enter valid mobile number') ??
+                    "Please enter valid mobile number";
               }
               return null;
             },
@@ -316,7 +331,8 @@ class _EmployeeFormState extends State<EmployeeForm> {
               LengthLimitingTextInputFormatter(10),
             ],
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Enter your Contact No 2 (Optional)'),
+              labelText: AppLocalizations.of(context)!
+                  .translate('Enter your Contact No 2 (Optional)'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(
@@ -343,7 +359,8 @@ class _EmployeeFormState extends State<EmployeeForm> {
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(
+                    AppLocalizations.of(context)!.translate(value) ?? value),
               );
             }).toList(),
             validator: (value) {
@@ -358,22 +375,29 @@ class _EmployeeFormState extends State<EmployeeForm> {
             controller: _passwordController,
             decoration: InputDecoration(
               suffixIcon: InkWell(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
-                      _securepassword ? _securepassword = false : _securepassword = true;
+                      _securepassword
+                          ? _securepassword = false
+                          : _securepassword = true;
                     });
                   },
-                  child: _securepassword ? const Icon(Icons.visibility):const Icon(Icons.visibility_off)),
-              labelText: AppLocalizations.of(context)!.translate('Please enter a password'),
+                  child: _securepassword
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off)),
+              labelText: AppLocalizations.of(context)!
+                  .translate('Please enter a password'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.grey),
               ),
             ),
-            obscureText: _securepassword ?  true : false,
+            obscureText: _securepassword ? true : false,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a password') ?? "Please enter a password";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a password') ??
+                    "Please enter a password";
               }
               return null;
             },
@@ -387,13 +411,19 @@ class _EmployeeFormState extends State<EmployeeForm> {
             ],
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              suffixIcon: TextButton( onPressed: () {
-                setState(() {
-                  isVerify = true;
-                });
-              }, child: const Text("Verify",style: TextStyle(color: Colors.blue),),
+              suffixIcon: TextButton(
+                onPressed: () {
+                  setState(() {
+                    isVerify = true;
+                  });
+                },
+                child: const Text(
+                  "Verify",
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
-              labelText: AppLocalizations.of(context)!.translate('Enter Aadhaar Card Number'),
+              labelText: AppLocalizations.of(context)!
+                  .translate('Enter Aadhaar Card Number'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.grey),
@@ -401,29 +431,34 @@ class _EmployeeFormState extends State<EmployeeForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter aadhar card number') ??"Please enter aadhar card number";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter aadhar card number') ??
+                    "Please enter aadhar card number";
               }
               return null;
             },
           ),
-          isVerify == true? Column(
-           children: [
-             const SizedBox(height: 10),
-             TextFormField(
-               decoration: InputDecoration(
-                 suffixIcon: TextButton(onPressed: () {
-                   setState(() {
-                     isVerify = false;
-                   });
-                 }, child: const Text("Submit"),),
-                   hintText: "Enter Verification code",
-                 border: OutlineInputBorder(
-                   borderRadius: BorderRadius.circular(10)
-                 )
-               ),
-             )
-           ],
-          ):const SizedBox(height: 10),
+          isVerify == true
+              ? Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(
+                          suffixIcon: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                isVerify = false;
+                              });
+                            },
+                            child: const Text("Submit"),
+                          ),
+                          hintText: "Enter Verification code",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                    )
+                  ],
+                )
+              : const SizedBox(height: 10),
           Row(
             children: [
               InkWell(
@@ -443,7 +478,9 @@ class _EmployeeFormState extends State<EmployeeForm> {
               const SizedBox(width: 12),
               Text(
                 _selectedImage == null
-                    ? "Add Your Aadhaar Card Photo"
+                    ? AppLocalizations.of(context)!
+                            .translate("Add Your Aadhaar Card Photo") ??
+                        "Add Your Aadhaar Card Photo"
                     : "Image Selected",
                 style: const TextStyle(fontSize: 16),
               ),
@@ -451,8 +488,9 @@ class _EmployeeFormState extends State<EmployeeForm> {
           ),
           const SizedBox(height: 5),
           if (_selectedImage == null)
-             Text(
-              AppLocalizations.of(context)!.translate('please_add_photo') ??"please_add_photo",
+            Text(
+              AppLocalizations.of(context)!.translate('please_add_photo') ??
+                  "please_add_photo",
               style: TextStyle(color: Colors.red),
             ),
           const SizedBox(height: 10),
@@ -463,20 +501,24 @@ class _EmployeeFormState extends State<EmployeeForm> {
                 borderSide: const BorderSide(color: Colors.grey),
               ),
             ),
-            hint: Text(AppLocalizations.of(context)!.translate('select_industry') ?? 'select_industry'),
+            hint: Text(
+                AppLocalizations.of(context)!.translate('select_industry') ??
+                    'select_industry'),
             isExpanded: true,
             isDense: true,
             value: _selectIndustry,
             onChanged: (newValue) {
               setState(() {
                 _selectIndustry = newValue!;
-                fetch_department( );
+                fetch_department();
               });
             },
             items: industry!.map((department) {
               return DropdownMenuItem<String>(
                 value: department["industry"],
-                child: Text(AppLocalizations.of(context)!.translate(department["industry"])?? department["industry"]),
+                child: Text(AppLocalizations.of(context)!
+                        .translate(department["industry"]) ??
+                    department["industry"]),
               );
             }).toList(),
           ),
@@ -489,7 +531,9 @@ class _EmployeeFormState extends State<EmployeeForm> {
                 borderSide: const BorderSide(color: Colors.grey),
               ),
             ),
-            hint: Text(AppLocalizations.of(context)!.translate("Select Department") ?? "select Department"),
+            hint: Text(
+                AppLocalizations.of(context)!.translate("Select Department") ??
+                    "select Department"),
             isExpanded: true,
             isDense: true,
             value: _selecteddepartment,
@@ -502,13 +546,14 @@ class _EmployeeFormState extends State<EmployeeForm> {
             items: department!.map((department) {
               return DropdownMenuItem<String>(
                 value: department["departmentName"],
-                child: Text(AppLocalizations.of(context)!.translate(department["departmentName"])??department["departmentName"]),
+                child: Text(AppLocalizations.of(context)!
+                        .translate(department["departmentName"]) ??
+                    department["departmentName"]),
               );
             }).toList(),
           ),
           const SizedBox(height: 10),
           // dropdown_menu_for_department(),
-
 
           DropdownButtonFormField<String>(
             decoration: InputDecoration(
@@ -518,14 +563,16 @@ class _EmployeeFormState extends State<EmployeeForm> {
                 borderSide: const BorderSide(color: Colors.grey),
               ),
             ),
-            validator: (value){
-              if(value!.isEmpty){
+            validator: (value) {
+              if (value!.isEmpty) {
                 return "please select designation";
               }
               return null;
             },
             value: _selecteddesignation,
-            hint:  Text(AppLocalizations.of(context)!.translate("Select Designation") ??"Select Designation"),
+            hint: Text(
+                AppLocalizations.of(context)!.translate("Select Designation") ??
+                    "Select Designation"),
             onChanged: (newValue) {
               setState(() {
                 _selecteddesignation = newValue!;
@@ -534,7 +581,9 @@ class _EmployeeFormState extends State<EmployeeForm> {
             items: designation!.map((designation) {
               return DropdownMenuItem<String>(
                 value: designation["designationName"],
-                child: Text( AppLocalizations.of(context)!.translate(designation["designationName"])??designation["designationName"]),
+                child: Text(AppLocalizations.of(context)!
+                        .translate(designation["designationName"]) ??
+                    designation["designationName"]),
               );
             }).toList(),
           ),
@@ -548,19 +597,17 @@ class _EmployeeFormState extends State<EmployeeForm> {
                 onPressed: _isLoading
                     ? null // Disable button while loading
                     : () async {
-                  if(_selectIndustry == null){
-                    snackBar().display(context, "please select Industry", Colors.red);
-                  }
-                  else if(_selecteddepartment == null){
-                    snackBar().display(context, "please select Department", Colors.red);
-                  }
-                  else if(_selecteddesignation == null){
-                    snackBar().display(context, "please select Designation", Colors.red);
-                  }
-
-                  else if (_formKey.currentState!.validate()) {
-
-                    setState(() {
+                        if (_selectIndustry == null) {
+                          snackBar().display(
+                              context, "please select Industry", Colors.red);
+                        } else if (_selecteddepartment == null) {
+                          snackBar().display(
+                              context, "please select Department", Colors.red);
+                        } else if (_selecteddesignation == null) {
+                          snackBar().display(
+                              context, "please select Designation", Colors.red);
+                        } else if (_formKey.currentState!.validate()) {
+                          setState(() {
                             _isLoading = true;
                           });
                           await _uploadImage();
@@ -580,109 +627,110 @@ class _EmployeeFormState extends State<EmployeeForm> {
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator()
-                    :  Text(
-                  AppLocalizations.of(context)!.translate('Register') ?? "Register",
+                    : Text(
+                        AppLocalizations.of(context)!.translate('Register') ??
+                            "Register",
                         style: TextStyle(fontSize: 18.0),
                       ).tr(),
               ),
             ),
           ),
-
         ],
       ),
     );
   }
-  Future<void> fetch_department() async{
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/department/department/$_selectIndustry"));
-    try{
-      if(response.statusCode == 200){
+
+  Future<void> fetch_department() async {
+    final response = await http.get(Uri.parse(
+        "https://diamond-server.vercel.app/department/department/$_selectIndustry"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
           department = data["data"];
         });
-        }
-
-    }
-    catch(e){
+      }
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
   }
-  Future<void> fetch_industry() async{
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/industry/industry"));
-    try{
-      if(response.statusCode == 200){
+
+  Future<void> fetch_industry() async {
+    final response = await http
+        .get(Uri.parse("https://diamond-server.vercel.app/industry/industry"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
           industry = data["data"];
         });
       }
-
-    }
-    catch(e){
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
   }
-  fetch_designation()async{
-    var endpointUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+
+  fetch_designation() async {
+    var endpointUrl =
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var data = json.decode(response.body);
       setState(() {
         designation = data["data"];
       });
-
-      }
-    else{
+    } else {
       setState(() {
         designation = [];
       });
       //  designation = [];
     }
-
   }
-   dropdown_menu_for_department(){
-   return FutureBuilder<List<String>>(
-     future: getAlldepartment(),
-     builder: (context, snapshot) {
-       if (snapshot.hasData) {
-         var data = snapshot.data!;
-         return DropdownButton(
-           // Initial Value
-           value: dropdownvalue ?? data[0],
 
-           // Down Arrow Icon
-           icon: const Icon(Icons.keyboard_arrow_down),
+  dropdown_menu_for_department() {
+    return FutureBuilder<List<String>>(
+      future: getAlldepartment(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data!;
+          return DropdownButton(
+            // Initial Value
+            value: dropdownvalue ?? data[0],
 
-           // Array list of items
-           items: data.map((String items) {
-             return DropdownMenuItem(
-               value: items,
-               child: Text(items),
-             );
-           }).toList(),
-           // After selecting the desired option,it will
-           // change button value to selected value
-           onChanged: (String? newValue) {
-             setState(() {
-               dropdownvalue = newValue!;
-             });
-           },
-         );
-       } else {
-         return const CircularProgressIndicator();
-       }
-     },
-   );
+            // Down Arrow Icon
+            icon: const Icon(Icons.keyboard_arrow_down),
+
+            // Array list of items
+            items: data.map((String items) {
+              return DropdownMenuItem(
+                value: items,
+                child: Text(items),
+              );
+            }).toList(),
+            // After selecting the desired option,it will
+            // change button value to selected value
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownvalue = newValue!;
+              });
+            },
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
+    );
   }
+
   String? dropdownvalue;
 
   Future<List<String>> getAlldepartment() async {
-    var baseUrl = "https://diamond-platform-12038fd67b59.herokuapp.com/department/department";
+    var baseUrl = "https://diamond-server.vercel.app/department/department";
 
     http.Response response = await http.get(Uri.parse(baseUrl));
 
@@ -697,8 +745,9 @@ class _EmployeeFormState extends State<EmployeeForm> {
       throw response.statusCode;
     }
   }
+
   Future<List<String>> getAllIndustry() async {
-    var baseUrl = "https://diamond-platform-12038fd67b59.herokuapp.com/industry/industry";
+    var baseUrl = "https://diamond-server.vercel.app/industry/industry";
 
     http.Response response = await http.get(Uri.parse(baseUrl));
 
@@ -714,7 +763,6 @@ class _EmployeeFormState extends State<EmployeeForm> {
     }
   }
 }
-
 
 class AadhaarCardNumberFormatter extends TextInputFormatter {
   @override
@@ -740,5 +788,4 @@ class AadhaarCardNumberFormatter extends TextInputFormatter {
 
     return oldValue;
   }
-
 }

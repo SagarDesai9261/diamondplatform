@@ -5,10 +5,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 import '../Pages/company/add_location.dart';
 import '../Widget/snackbar.dart';
@@ -21,6 +23,7 @@ class CompanyForm extends StatefulWidget {
   @override
   State<CompanyForm> createState() => _CompanyFormState();
 }
+
 class _CompanyFormState extends State<CompanyForm> {
   @override
   void initState() {
@@ -29,13 +32,14 @@ class _CompanyFormState extends State<CompanyForm> {
     fetch_department();
     super.initState();
   }
+  String? address = "";
   final _formKey = GlobalKey<FormState>();
   bool _securepassword = true;
   List department = [];
   List designation = [];
   List? industry = [];
   String? _selectIndustry;
-  String? _selecteddepartment ;
+  String? _selecteddepartment;
   String? _selecteddesignation;
   LatLng? selectedLocation;
   // city api
@@ -46,8 +50,8 @@ class _CompanyFormState extends State<CompanyForm> {
   late String selectedCity = 'Bhavnagar';
 
   Future<void> fetchCities() async {
-    final response = await http.get(
-        Uri.parse('https://diamond-platform-12038fd67b59.herokuapp.com/city'));
+    final response =
+        await http.get(Uri.parse('https://diamond-server.vercel.app/city'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -67,12 +71,11 @@ class _CompanyFormState extends State<CompanyForm> {
     }
   }
 
-
-
   //controller
   final String _selectedItem = 'Option 1';
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _employeernameController = TextEditingController();
+  final TextEditingController _employeernameController =
+      TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
   final TextEditingController _contactNoController = TextEditingController();
@@ -95,8 +98,7 @@ class _CompanyFormState extends State<CompanyForm> {
   }
 
   Future<void> postData() async {
-    final url = Uri.parse(
-        'https://diamond-platform-12038fd67b59.herokuapp.com/company');
+    final url = Uri.parse('https://diamond-server.vercel.app/company');
 
     final headers = {
       'Content-Type': 'application/json',
@@ -107,17 +109,19 @@ class _CompanyFormState extends State<CompanyForm> {
       'gstNumber': _gstController.text,
       'adress': _addressController.text,
       'city': selectedCity,
-      'employeerName':_employeernameController.text,
+      'employeerName': _employeernameController.text,
       'mobileNumber': int.parse(_contactNoController.text),
       'department': _selecteddepartment,
       'designation': _selecteddesignation,
       'password': _passwordController.text,
-      'latitude':selectedLocation!.latitude,
-      'longitude':selectedLocation!.longitude,
-      'isAdminApproval':false,
-      'industry':_selectIndustry
+      'latitude': selectedLocation!.latitude,
+      'longitude': selectedLocation!.longitude,
+      'isAdminApproval': false,
+      'industry': _selectIndustry,
+      'status' : ["Pending"],
+      'deniedReason': [],
     });
-    print(body);
+
     final response = await http.post(
       url,
       headers: headers,
@@ -125,7 +129,6 @@ class _CompanyFormState extends State<CompanyForm> {
     );
 
     if (response.statusCode == 200) {
-
       final companyData = {
         'companyName': _nameController.text,
         'gstNumber': _gstController.text,
@@ -146,7 +149,8 @@ class _CompanyFormState extends State<CompanyForm> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
               },
               child: const Text('OK'),
             ),
@@ -177,6 +181,7 @@ class _CompanyFormState extends State<CompanyForm> {
 
   @override
   Widget build(BuildContext context) {
+
     return Form(
       key: _formKey,
       child: Column(
@@ -185,7 +190,9 @@ class _CompanyFormState extends State<CompanyForm> {
           TextFormField(
             controller: _nameController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Company Name') ?? "Company name",
+              labelText:
+                  AppLocalizations.of(context)!.translate('Company Name') ??
+                      "Company name",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -193,7 +200,9 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a name') ?? "Please enter a name";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a name') ??
+                    "Please enter a name";
               }
               return null;
             },
@@ -202,7 +211,9 @@ class _CompanyFormState extends State<CompanyForm> {
           TextFormField(
             controller: _employeernameController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Manager Name') ?? "Manager Name",
+              labelText:
+                  AppLocalizations.of(context)!.translate('Manager Name') ??
+                      "Manager Name",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -210,16 +221,22 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a managar name') ?? "Please enter a managar name";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a managar name') ??
+                    "Please enter a managar name";
               }
               return null;
             },
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           TextFormField(
             controller: _addressController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Enter your Address') ?? "Address",
+              labelText: AppLocalizations.of(context)!
+                      .translate('Enter your Address') ??
+                  "Address",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -227,7 +244,9 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a address') ??"Please enter a address";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a address') ??
+                    "Please enter a address";
               }
               return null;
             },
@@ -240,7 +259,8 @@ class _CompanyFormState extends State<CompanyForm> {
             items: cities.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text( AppLocalizations.of(context)!.translate(value)??value),
+                child: Text(
+                    AppLocalizations.of(context)!.translate(value) ?? value),
               );
             }).toList(),
             onChanged: (String? newValue) {
@@ -252,12 +272,16 @@ class _CompanyFormState extends State<CompanyForm> {
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please select a city') ?? "Please select a city";
+                return AppLocalizations.of(context)!
+                        .translate('Please select a city') ??
+                    "Please select a city";
               }
               return null;
             },
             decoration: InputDecoration(
-              labelText:  AppLocalizations.of(context)!.translate('Select a city') ?? "Select a city",
+              labelText:
+                  AppLocalizations.of(context)!.translate('Select a city') ??
+                      "Select a city",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -270,7 +294,9 @@ class _CompanyFormState extends State<CompanyForm> {
             keyboardType: TextInputType.number,
             maxLength: 10,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('Enter your Contact No') ?? "Contact Number",
+              labelText: AppLocalizations.of(context)!
+                      .translate('Enter your Contact No') ??
+                  "Contact Number",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -278,29 +304,36 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a contact number') ??"Please enter a contact number";
-              }
-              else if(value.length < 10){
-                return  AppLocalizations.of(context)!.translate('Please enter valid mobile number')??"Please enter valid mobile number";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a contact number') ??
+                    "Please enter a contact number";
+              } else if (value.length < 10) {
+                return AppLocalizations.of(context)!
+                        .translate('Please enter valid mobile number') ??
+                    "Please enter valid mobile number";
               }
               return null;
             },
           ),
           const SizedBox(height: 10),
           TextFormField(
-            obscureText: _securepassword ?  true : false,
+            obscureText: _securepassword ? true : false,
             controller: _passwordController,
             decoration: InputDecoration(
-
               suffixIcon: InkWell(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
-                      _securepassword ? _securepassword = false : _securepassword = true;
+                      _securepassword
+                          ? _securepassword = false
+                          : _securepassword = true;
                     });
                   },
-                  child: _securepassword ? const Icon(Icons.visibility):const Icon(Icons.visibility_off)),
-              labelText: AppLocalizations.of(context)!.translate('Enter your password') ?? "Password",
-
+                  child: _securepassword
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off)),
+              labelText: AppLocalizations.of(context)!
+                      .translate('Enter your password') ??
+                  "Password",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -308,20 +341,21 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a password') ?? "Please enter a password";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a password') ??
+                    "Please enter a password";
               }
               return null;
             },
-
           ),
           const SizedBox(height: 10),
           TextFormField(
             controller: _gstController,
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(15)
-            ],
+            inputFormatters: [LengthLimitingTextInputFormatter(15)],
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.translate('GST Number') ?? "GST Number",
+              labelText:
+                  AppLocalizations.of(context)!.translate('GST Number') ??
+                      "GST Number",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.black),
@@ -329,15 +363,20 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return  AppLocalizations.of(context)!.translate('Please enter a Gst number') ?? "Please enter a Gst number";
-              }
-              else if(value.length < 15){
-                return  AppLocalizations.of(context)!.translate('Please valid Gst Number')??"Please valid Gst Number";
+                return AppLocalizations.of(context)!
+                        .translate('Please enter a Gst number') ??
+                    "Please enter a Gst number";
+              } else if (value.length < 15) {
+                return AppLocalizations.of(context)!
+                        .translate('Please valid Gst Number') ??
+                    "Please valid Gst Number";
               }
               return null;
             },
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           DropdownButtonFormField<String>(
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -345,7 +384,9 @@ class _CompanyFormState extends State<CompanyForm> {
                 borderSide: const BorderSide(color: Colors.grey),
               ),
             ),
-            hint:  Text(AppLocalizations.of(context)!.translate('select_industry') ?? "Select Industry"),
+            hint: Text(
+                AppLocalizations.of(context)!.translate('select_industry') ??
+                    "Select Industry"),
             isExpanded: true,
             isDense: true,
             value: _selectIndustry,
@@ -358,7 +399,9 @@ class _CompanyFormState extends State<CompanyForm> {
             items: industry!.map((department) {
               return DropdownMenuItem<String>(
                 value: department["industry"],
-                child: Text( AppLocalizations.of(context)!.translate(department["industry"]) ?? department["industry"] ),
+                child: Text(AppLocalizations.of(context)!
+                        .translate(department["industry"]) ??
+                    department["industry"]),
               );
             }).toList(),
           ),
@@ -367,13 +410,14 @@ class _CompanyFormState extends State<CompanyForm> {
           ),
           DropdownButtonFormField<String>(
             decoration: InputDecoration(
-
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.grey),
               ),
             ),
-            hint: Text(AppLocalizations.of(context)!.translate('Select Department') ?? "Select department"),
+            hint: Text(
+                AppLocalizations.of(context)!.translate('Select Department') ??
+                    "Select department"),
             isExpanded: true,
             isDense: true,
             value: _selecteddepartment,
@@ -383,11 +427,12 @@ class _CompanyFormState extends State<CompanyForm> {
                 fetch_designation();
               });
             },
-
             items: department.map((department) {
               return DropdownMenuItem<String>(
                 value: department["departmentName"],
-                child: Text( AppLocalizations.of(context)!.translate(department["departmentName"]) ??department["departmentName"] ),
+                child: Text(AppLocalizations.of(context)!
+                        .translate(department["departmentName"]) ??
+                    department["departmentName"]),
               );
             }).toList(),
           ),
@@ -403,7 +448,9 @@ class _CompanyFormState extends State<CompanyForm> {
               ),
             ),
             value: _selecteddesignation,
-            hint: Text(AppLocalizations.of(context)!.translate('Select Designation') ?? "Select designation"),
+            hint: Text(
+                AppLocalizations.of(context)!.translate('Select Designation') ??
+                    "Select designation"),
             onChanged: (newValue) {
               setState(() {
                 _selecteddesignation = newValue!;
@@ -412,7 +459,9 @@ class _CompanyFormState extends State<CompanyForm> {
             items: designation.map((designation) {
               return DropdownMenuItem<String>(
                 value: designation["designationName"],
-                child: Text( AppLocalizations.of(context)!.translate(designation["designationName"] ) ?? designation["designationName"]),
+                child: Text(AppLocalizations.of(context)!
+                        .translate(designation["designationName"]) ??
+                    designation["designationName"]),
               );
             }).toList(),
           ),
@@ -420,17 +469,25 @@ class _CompanyFormState extends State<CompanyForm> {
           Row(
             children: [
               Icon(Icons.location_on_outlined),
-              TextButton(onPressed: (){
-                _navigateToMapScreen();
-                print(selectedLocation!.latitude );
-                print(selectedLocation!.longitude );
-              }, child: Text(AppLocalizations.of(context)!.translate('Select address on Map') ?? "Select address on Map")),
+              TextButton(
+                  onPressed: () {
+                    _navigateToMapScreen();
+
+                  },
+                  child: Text(AppLocalizations.of(context)!
+                          .translate('Select address on Map') ??
+                      "Select address on Map")),
             ],
           ),
-          selectedLocation != null ? Column(children: [
-            Text("latitude : ${selectedLocation!.latitude}"),
-            Text("longitude : ${selectedLocation!.longitude}")
-          ],) : Container(),
+          selectedLocation != null
+              ? Column(
+                  children: [
+                    Text(address!),
+                    /* Text("latitude : ${selectedLocation!.latitude}"),
+                    Text("longitude : ${selectedLocation!.longitude}")*/
+                  ],
+                )
+              : Container(),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: SizedBox(
@@ -439,17 +496,16 @@ class _CompanyFormState extends State<CompanyForm> {
                 onPressed: _isLoading
                     ? null // Disable button while loading
                     : () async {
-                  if(_selecteddepartment == null){
-                    snackBar().display(context, "please select Department", Colors.red);
-
-                  }
-                  else if(_selecteddesignation == null){
-                    snackBar().display(context, "please select Designation", Colors.red);
-                  }
-                  else if(selectedLocation == null){
-                    snackBar().display(context, "please select address on map", Colors.red);
-                  }
-                  else  if (_formKey.currentState!.validate()) {
+                        if (_selecteddepartment == null) {
+                          snackBar().display(
+                              context, "please select Department", Colors.red);
+                        } else if (_selecteddesignation == null) {
+                          snackBar().display(
+                              context, "please select Designation", Colors.red);
+                        } else if (selectedLocation == null) {
+                          snackBar().display(context,
+                              "please select address on map", Colors.red);
+                        } else if (_formKey.currentState!.validate()) {
                           setState(() {
                             _isLoading = true;
                           });
@@ -471,8 +527,9 @@ class _CompanyFormState extends State<CompanyForm> {
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator()
-                    :  Text(
-                        AppLocalizations.of(context)!.translate('Register') ?? "Register",
+                    : Text(
+                        AppLocalizations.of(context)!.translate('Register') ??
+                            "Register",
                         style: TextStyle(fontSize: 18.0),
                       ).tr(),
               ),
@@ -482,67 +539,84 @@ class _CompanyFormState extends State<CompanyForm> {
       ),
     );
   }
-  Future<void> fetch_department() async{
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/department/department/$_selectIndustry"));
-    try{
-      if(response.statusCode == 200){
+
+  Future<void> fetch_department() async {
+    final response = await http.get(Uri.parse(
+        "https://diamond-server.vercel.app/department/department/$_selectIndustry"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
           department = data["data"];
         });
-        }
-
-    }
-    catch(e){
+      }
+    } catch (e) {
       print(e);
     }
   }
-  Future<void> fetch_industry() async{
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/industry/industry"));
-    try{
-      if(response.statusCode == 200){
+  Future<String> getLocationAddress(double latitude,double longitude) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+
+        String formattedAddress = "${placemark.street} ${placemark.subLocality} \n  ${placemark.locality}-${placemark.postalCode} ${placemark.administrativeArea} , ${placemark.country}";
+        return formattedAddress;
+      } else {
+        return "Address not Found";
+      }
+    } catch (e) {
+
+    }
+    return "";
+  }
+  Future<void> fetch_industry() async {
+    final response = await http
+        .get(Uri.parse("https://diamond-server.vercel.app/industry/industry"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
           industry = data["data"];
         });
       }
-
-    }
-    catch(e){
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
   }
-  fetch_designation()async{
-    var endpointUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+
+  fetch_designation() async {
+    var endpointUrl =
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var data = json.decode(response.body);
       setState(() {
         designation = data["data"];
       });
-
-      }
-    else{
+    } else {
       setState(() {
         designation = [];
       });
       //  designation = [];
     }
-
   }
+
   void _navigateToMapScreen() async {
     final result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => MapScreen(),
       ),
     );
-
+  var addresses =  result != null ? await getLocationAddress(result!.latitude, result!.longitude) : "";
     if (result != null && result is LatLng) {
       setState(() {
         selectedLocation = result;
+        address = addresses;
       });
     }
   }

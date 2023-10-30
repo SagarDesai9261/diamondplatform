@@ -6,11 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 
 import '../../NotificationService.dart';
 import '../../Widget/snackbar.dart';
 import '../../main.dart';
+
 class Create_job_post extends StatefulWidget {
   const Create_job_post({Key? key}) : super(key: key);
 
@@ -28,25 +29,35 @@ class _Create_job_postState extends State<Create_job_post> {
   String? _selecteddepartment;
   String? _selecteddesignation;
   String selectedOption3 = 'Option 1';
-  List<String> options = ['Option 1', 'Option 2','Option 3'];
+  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetch_department();
   }
+
   DateTime? createJobPostDate;
   DateTime? endJobPostDate;
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      fieldHintText: isStartDate ?  AppLocalizations.of(context)!.translate("Select Create Job Post Date") ?? "Select Create JobPost Date" : AppLocalizations.of(context)!.translate("Select End Job Post Date")??"Select End JobPost Date",
-      initialDate: isStartDate ? DateTime.now() : DateTime.now().add(const Duration(days: 7)),
+      fieldHintText: isStartDate
+          ? AppLocalizations.of(context)!
+                  .translate("Select Create Job Post Date") ??
+              "Select Create JobPost Date"
+          : AppLocalizations.of(context)!
+                  .translate("Select End Job Post Date") ??
+              "Select End JobPost Date",
+      initialDate: isStartDate
+          ? DateTime.now()
+          : DateTime.now().add(const Duration(days: 7)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 20)),
     );
 
-    if (picked != null && picked != (isStartDate ? createJobPostDate : endJobPostDate)) {
+    if (picked != null &&
+        picked != (isStartDate ? createJobPostDate : endJobPostDate)) {
       setState(() {
         if (isStartDate) {
           createJobPostDate = picked;
@@ -56,11 +67,12 @@ class _Create_job_postState extends State<Create_job_post> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: Scaffold(
-        body:   SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: [
               BannerSlider(),
@@ -69,7 +81,7 @@ class _Create_job_postState extends State<Create_job_post> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    width:MediaQuery.of(context).size.width * .8,
+                    width: MediaQuery.of(context).size.width * .8,
                     padding: const EdgeInsets.all(8.0),
                     child: DropdownButtonFormField<String>(
                       decoration: InputDecoration(
@@ -78,7 +90,9 @@ class _Create_job_postState extends State<Create_job_post> {
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
                       ),
-                      hint:  Text(AppLocalizations.of(context)!.translate("Select Department")?? "Select Department"),
+                      hint: Text(AppLocalizations.of(context)!
+                              .translate("Select Department") ??
+                          "Select Department"),
                       isExpanded: true,
                       isDense: true,
                       value: _selecteddepartment,
@@ -97,7 +111,8 @@ class _Create_job_postState extends State<Create_job_post> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(30),
@@ -111,10 +126,15 @@ class _Create_job_postState extends State<Create_job_post> {
                             selectedOption3 = newValue!;
                           });
                         },
-                        items: options.map<DropdownMenuItem<String>>((String value) {
+                        items: options
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: value == "Option 1" ? Image.asset("assets/male.png"): value == "Option 2" ? Image.asset("assets/female.png") :Image.asset("assets/both.png"),
+                            child: value == "Option 1"
+                                ? Image.asset("assets/male.png")
+                                : value == "Option 2"
+                                    ? Image.asset("assets/female.png")
+                                    : Image.asset("assets/both.png"),
                           );
                         }).toList(),
                       ),
@@ -122,7 +142,6 @@ class _Create_job_postState extends State<Create_job_post> {
                   ),
                 ],
               ),
-
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -134,14 +153,16 @@ class _Create_job_postState extends State<Create_job_post> {
                       borderSide: const BorderSide(color: Colors.grey),
                     ),
                   ),
-                  validator: (value){
-                    if(value!.isEmpty){
+                  validator: (value) {
+                    if (value!.isEmpty) {
                       return "please select designation";
                     }
                     return null;
                   },
                   value: _selecteddesignation,
-                  hint: Text(AppLocalizations.of(context)!.translate("Select Designation") ?? "Select Designation" ),
+                  hint: Text(AppLocalizations.of(context)!
+                          .translate("Select Designation") ??
+                      "Select Designation"),
                   onChanged: (newValue) {
                     setState(() {
                       _selecteddesignation = newValue!;
@@ -163,7 +184,7 @@ class _Create_job_postState extends State<Create_job_post> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         requiretype = false;
                       });
@@ -172,18 +193,25 @@ class _Create_job_postState extends State<Create_job_post> {
                       width: MediaQuery.of(context).size.width * .35,
                       height: MediaQuery.of(context).size.height * .07,
                       decoration: BoxDecoration(
-                          color: requiretype == false ? Colors.redAccent:Colors.white,
+                          color: requiretype == false
+                              ? Colors.redAccent
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(30),
-                          border: requiretype == true ? Border.all() : null
-                      ),
+                          border: requiretype == true ? Border.all() : null),
                       alignment: Alignment.center,
-                      child: Text(AppLocalizations.of(context)!.translate("Fixed") ?? "Fixed",style: TextStyle(
-                          fontSize: 20,color: requiretype ==false?Colors.white :Colors.black
-                      ),) ,
+                      child: Text(
+                        AppLocalizations.of(context)!.translate("Fixed") ??
+                            "Fixed",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: requiretype == false
+                                ? Colors.white
+                                : Colors.black),
+                      ),
                     ),
                   ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         requiretype = true;
                       });
@@ -192,46 +220,53 @@ class _Create_job_postState extends State<Create_job_post> {
                       width: MediaQuery.of(context).size.width * .35,
                       height: MediaQuery.of(context).size.height * .07,
                       decoration: BoxDecoration(
-                          color: requiretype == true ? Colors.red:Colors.white,
-                          border: requiretype == false ? Border.all() : null,//color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(30)
-                      ),
+                          color:
+                              requiretype == true ? Colors.red : Colors.white,
+                          border: requiretype == false
+                              ? Border.all()
+                              : null, //color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(30)),
                       alignment: Alignment.center,
-                      child:Text(AppLocalizations.of(context)!.translate("Retail") ?? "Retail",style: TextStyle(
-                          fontSize: 20,color: requiretype ==true?Colors.white :Colors.black
-                      ),),
+                      child: Text(
+                        AppLocalizations.of(context)!.translate("Retail") ??
+                            "Retail",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: requiretype == true
+                                ? Colors.white
+                                : Colors.black),
+                      ),
                     ),
                   ),
-
                 ],
               ),
-              requiretype == false ? Container(
-                padding: const EdgeInsets.all(20),
-                child: TextFormField(
-                  controller: salary,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-
-                      hintText: AppLocalizations.of(context)!.translate("Expected Salary") ?? "Enter Expected Salary",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
-                  ),
-
-                ),
-              ) :Container(
-                padding: const EdgeInsets.all(20),
-                child: TextFormField(
-                  controller: retail,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.translate("Expected Price per piece")??"Enter Expected Price per piece",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
-                  ),
-                ),
-              ),
+              requiretype == false
+                  ? Container(
+                      padding: const EdgeInsets.all(20),
+                      child: TextFormField(
+                        controller: salary,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!
+                                    .translate("Expected Salary") ??
+                                "Enter Expected Salary",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20))),
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(20),
+                      child: TextFormField(
+                        controller: retail,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!
+                                    .translate("Expected Price per piece") ??
+                                "Enter Expected Price per piece",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20))),
+                      ),
+                    ),
               InkWell(
                 onTap: () => _selectDate(context, true),
                 child: Container(
@@ -246,10 +281,11 @@ class _Create_job_postState extends State<Create_job_post> {
                   child: Text(
                     createJobPostDate != null
                         ? "${createJobPostDate!.toLocal()}".split(' ')[0]
-                        : AppLocalizations.of(context)!.translate('Select Create Job Post Date') ?? "Select Create Job Post Date",
-                    style: const TextStyle(
-                        fontSize: 18
-                    ),),
+                        : AppLocalizations.of(context)!
+                                .translate('Select Create Job Post Date') ??
+                            "Select Create Job Post Date",
+                    style: const TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -270,10 +306,16 @@ class _Create_job_postState extends State<Create_job_post> {
                   child: Text(
                     endJobPostDate != null
                         ? "${endJobPostDate!.toLocal()}".split(' ')[0]
-                        : AppLocalizations.of(context)!.translate('Select End Job Post Date') ?? "Select End Job Post Date",
-                    style: const TextStyle(fontSize: 18),),
-                ),),
-              const SizedBox(height: 10,),
+                        : AppLocalizations.of(context)!
+                                .translate('Select End Job Post Date') ??
+                            "Select End Job Post Date",
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               // ... the rest of your existing code ...
               SizedBox(
                 height: MediaQuery.of(context).size.height * .07,
@@ -281,108 +323,117 @@ class _Create_job_postState extends State<Create_job_post> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      ),
+                          borderRadius: BorderRadius.circular(20)),
                       backgroundColor: Colors.black,
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       submitPost();
-                    }, child:  Text(AppLocalizations.of(context)!.translate("Post") ?? "Post",style: TextStyle(fontSize: 20),)),
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.translate("Post") ?? "Post",
+                      style: TextStyle(fontSize: 20),
+                    )),
               ),
-              SizedBox(height: 50,)
+              SizedBox(
+                height: 50,
+              )
             ],
           ),
         ),
       ),
     );
   }
-  Future<void> fetch_department() async{
+
+  Future<void> fetch_department() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String,dynamic> data = json.decode(prefs.getString("user_details")!);
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/department/department/${data["industry"]}"));
-    try{
-      if(response.statusCode == 200){
+    Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
+    final response = await http.get(Uri.parse(
+        "https://diamond-server.vercel.app/department/department/${data["industry"]}"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
           department = data["data"];
         });
       }
-
-    }
-    catch(e){
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
   }
-  fetch_designation()async{
-    var endpointUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+
+  fetch_designation() async {
+    var endpointUrl =
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var data = json.decode(response.body);
       setState(() {
         designation = data["data"];
       });
-
-    }
-    else{
+    } else {
       setState(() {
         designation = [];
       });
       //  designation = [];
     }
-
   }
-  submitPost()async{
-    if(requiretype == false && salary.text.isEmpty){
+
+  submitPost() async {
+    if (requiretype == false && salary.text.isEmpty) {
       snackBar().display(context, "please enter a salary", Colors.red);
-    }
-    else if(requiretype == true && retail.text.isEmpty){
+    } else if (requiretype == true && retail.text.isEmpty) {
       snackBar().display(context, "please enter a price", Colors.red);
-    }
-    else {
+    } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
 
 
-      requiretype == true ? print("Retail : ${retail.text}") : print(
-          "Salary : ${salary.text}");
       String salaryText = salary.text.trim();
       int parsedSalary = salaryText.isEmpty ? 0 : int.parse(salaryText);
       String retailText = retail.text.trim();
       int parsedretail = retailText.isEmpty ? 0 : int.parse(retailText);
       var body1 = {
-        "employeeId":data["_id"],
+        "employeeId": data["_id"],
         "employeeName": data["name"],
         "departmentName": _selecteddepartment,
         "designationName": _selecteddesignation,
         "mobileNumber": data["mobileNumber"].toString(),
         "cityName": data["city"],
-        "adress":data['adress'],
+        "adress": data['adress'],
         "requirementTypes": requiretype.toString(),
         "salary": parsedSalary.toString(),
         "createJobPostDate": createJobPostDate.toString(),
         "endJobPostDate": endJobPostDate.toString(),
-        "gender": selectedOption3 == "Option 1" ? "Male" : selectedOption3 == "Option 2" ?  "Female" : "Both",
-        "industry":data["industry"]
+        "gender": selectedOption3 == "Option 1"
+            ? "Male"
+            : selectedOption3 == "Option 2"
+                ? "Female"
+                : "Both",
+        "industry": data["industry"]
       };
       var body2 = {
-        "employeeId":data["_id"],
+        "employeeId": data["_id"],
         "employeeName": data["name"],
         "departmentName": data["department"],
         "designationName": data["designation"],
         "mobileNumber": data["mobileNumber"].toString(),
         "cityName": data["city"],
-        "adress":data['adress'],
+        "adress": data['adress'],
         //"numberOfEmp": itemCount.toString(),
         "requirementTypes": requiretype.toString(),
         "price": parsedretail.toString(),
         "createJobPostDate": createJobPostDate.toString(),
         "endJobPostDate": endJobPostDate.toString(),
-        "gender": selectedOption3 == "Option 1" ? "Male" : selectedOption3 == "Option 2" ?  "Female" : "Both",
+        "gender": selectedOption3 == "Option 1"
+            ? "Male"
+            : selectedOption3 == "Option 2"
+                ? "Female"
+                : "Both",
 
-        "industry":data["industry"]
+        "industry": data["industry"]
       };
       var body;
       if (requiretype == false) {
@@ -390,16 +441,20 @@ class _Create_job_postState extends State<Create_job_post> {
       } else {
         body = body2;
       }
-      print(body);
+      print(json.encode(body));
       try {
-        var response = await http.post(Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/findjob/findjob"),
+        var response = await http.post(
+            Uri.parse("https://diamond-server.vercel.app/findjob/findjob"),
             body: body);
         var data = json.decode(response.body);
         if (data["statusCode"] == 200) {
-
-          NotificationService().showNotification(0,"Job Post","New Job post Created Successfully");
-            Alert(context: context,title:"Job post created Successfully",type: AlertType.success,buttons: [
+          NotificationService().showNotification(
+              0, "Job Post", "New Job post Created Successfully");
+          Alert(
+            context: context,
+            title: "Job post created Successfully",
+            type: AlertType.success,
+            buttons: [
               DialogButton(
                 child: Text(
                   "ok",
@@ -409,16 +464,16 @@ class _Create_job_postState extends State<Create_job_post> {
                 color: Color.fromRGBO(0, 179, 134, 1.0),
                 radius: BorderRadius.circular(0.0),
               ),
-            ],).show();
+            ],
+          ).show();
           //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Job Post Created Successfully"),behavior: SnackBarBehavior.floating,));
-         // snackBar().display(context, "Job post Successfully", Colors.green);
-        }
-        else {
-          snackBar().display(context, "Job post already Successfully", Colors.red);
+          // snackBar().display(context, "Job post Successfully", Colors.green);
+        } else {
+          snackBar()
+              .display(context, "Job post already Successfully", Colors.red);
         }
         //print(response.statusCode);
-      }
-      catch (e) {
+      } catch (e) {
         print(e);
       }
     }

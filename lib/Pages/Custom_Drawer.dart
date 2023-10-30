@@ -20,6 +20,7 @@ import 'package:diamondplatform/Pages/employee/profile.dart';
 import 'package:diamondplatform/Pages/settings_page.dart';
 
 import 'company/add_location.dart';
+import 'contactUs.dart';
 
 class CustomDrawer extends StatefulWidget {
   final bool isEmployee; // Add this parameter
@@ -134,7 +135,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   },
                   btnOkText: "Yes",
                   btnOkOnPress: () {
-                    _launchPhoneCall("9824529042");
+                    _launchPhoneCall("9316728787");
                   },
                 )..show();
               },
@@ -166,6 +167,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 color: Colors.black,
               ),
               title: Text(AppLocalizations.of(context)!.translate('Settings')??"Settings"),
+            ),
+          ),
+          InkWell(
+            onTap: () async{
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>ContactUsPage()));
+            },
+            child:  ListTile(
+              leading: Icon(
+                Icons.info,
+                color: Colors.black,
+              ),
+              title: Text(AppLocalizations.of(context)!.translate('Contact Us')??"Contact Us"),
             ),
           ),
           InkWell(

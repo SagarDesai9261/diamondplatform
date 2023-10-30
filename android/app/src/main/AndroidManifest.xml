@@ -8,7 +8,7 @@
     <!-- Include only if your app benefits from precise location access. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
-        android:label="Diamond Platform"
+        android:label="Job Pulse"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         >
@@ -28,6 +28,10 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
+            <meta-data
+                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+                android:resource="@drawable/launch_background" />
+
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -50,6 +54,6 @@
             android:value="high_importance_channel" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1815733895558819~7330790213"/>
+                android:value="ca-app-pub-1815733895558819~7330790213"/>
     </application>
 </manifest>

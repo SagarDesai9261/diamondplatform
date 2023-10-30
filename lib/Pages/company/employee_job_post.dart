@@ -24,7 +24,7 @@ class _employee_viewState extends State<employee_view_job_post> {
   String? dropdownValue2;
   String? companyname;
   String selectedOption3 = 'Option 1';
-  List<String> options = ['Option 1', 'Option 2','Option 3'];
+  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
   @override
   void initState() {
     // TODO: implement initState
@@ -37,16 +37,18 @@ class _employee_viewState extends State<employee_view_job_post> {
   List<String> cities = [];
   String? selectedCity = 'Bhavnagar';
   Future<void> fetchCities() async {
-    final response = await http.get(
-        Uri.parse('https://diamond-platform-12038fd67b59.herokuapp.com/city'));
+    final response =
+        await http.get(Uri.parse('https://diamond-server.vercel.app/city'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['data'] != null && data['data'] is List) {
         setState(() {
           cities = List<String>.from(data['data'].map((city) =>
-          city['cityName'] != null
-              ? city['cityName'].toString()
-              : '')); // Convert to string, handle null
+              city['cityName'] != null
+                  ? city['cityName'].toString()
+                  : '')); // Convert to string, handle null
+          cities!.insert(0,  "All");
+          selectedCity  = cities[0];
         });
       } else {
         throw Exception('Invalid city data format');
@@ -64,11 +66,16 @@ class _employee_viewState extends State<employee_view_job_post> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 14),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 3.0, horizontal: 14),
               child: DropdownButtonFormField<String>(
                 value: selectedCity ?? "choose the city",
                 items: cities.map((String city) {
-                  return DropdownMenuItem<String>(value: city, child: Text(AppLocalizations.of(context)!.translate(city)??city));
+                  return DropdownMenuItem<String>(
+                      value: city,
+                      child: Text(
+                          AppLocalizations.of(context)!.translate(city) ??
+                              city));
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -85,44 +92,50 @@ class _employee_viewState extends State<employee_view_job_post> {
               ),
             ),
             StreamBuilder(
-                stream: employee_job_post_for_comapny().employee_view_job_post(),
+                stream:
+                    employee_job_post_for_comapny().employee_view_job_post(),
                 builder: (context, snapshot) {
-                  if(snapshot.hasError){
-                    return Center(child: Text("Employee data display error"),);
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text("Employee data display error"),
+                    );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
-                  else if(snapshot.connectionState == ConnectionState.waiting){
-                    return Center(child: CircularProgressIndicator(),);
-                  }
-                  print(snapshot.data!.length);
 
                   var filterdata = snapshot.data;
-                  if(selectedCity != null){
-                    filterdata = filterdata!.where((element) => element.cityName == selectedCity).toList();
+                  if(selectedCity == "All"){
+                    filterdata = filterdata;
                   }
-                  if(filterdata!.length == 0){
-                    return Container(
-                        child:Text("No Employees Found")
-                    );
+                  else if (selectedCity != null) {
+                    filterdata = filterdata!
+                        .where((element) => element.cityName == selectedCity)
+                        .toList();
+                  }
+                  if (filterdata!.length == 0) {
+                    return Container(child: Text("No Employees Found"));
                   }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * .71,
                     child: ListView.builder(
                         itemCount: snapshot.data!.length,
-                        itemBuilder: (context,index){
-
+                        itemBuilder: (context, index) {
                           return Container(
                             margin: EdgeInsets.all(5),
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               //border: Border.all(),
-
                             ),
-                            child:Card(
+                            child: Card(
                               elevation: 5, // Add elevation for a shadow effect
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15), // Rounded corners
+                                borderRadius: BorderRadius.circular(
+                                    15), // Rounded corners
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -130,13 +143,18 @@ class _employee_viewState extends State<employee_view_job_post> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              AppLocalizations.of(context)!.translate("Employee Name") ?? "Employee Name",
+                                              AppLocalizations.of(context)!
+                                                      .translate(
+                                                          "Employee Name") ??
+                                                  "Employee Name",
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -149,17 +167,21 @@ class _employee_viewState extends State<employee_view_job_post> {
                                           ],
                                         ),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              AppLocalizations.of(context)!.translate( "Position Name") ?? "Position Name",
+                                              AppLocalizations.of(context)!
+                                                      .translate(
+                                                          "Position Name") ??
+                                                  "Position Name",
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Text(
-                                              "${AppLocalizations.of(context)!.translate(snapshot.data![index].designationName!)??snapshot.data![index].designationName}",
+                                              "${AppLocalizations.of(context)!.translate(snapshot.data![index].designationName!) ?? snapshot.data![index].designationName}",
                                               style: TextStyle(fontSize: 16),
                                             ),
                                           ],
@@ -167,15 +189,18 @@ class _employee_viewState extends State<employee_view_job_post> {
                                       ],
                                     ),
                                     SizedBox(height: 16),
-
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              AppLocalizations.of(context)!.translate("Mobile")??"Mobile",
+                                              AppLocalizations.of(context)!
+                                                      .translate("Mobile") ??
+                                                  "Mobile",
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -187,31 +212,45 @@ class _employee_viewState extends State<employee_view_job_post> {
                                             ),
                                           ],
                                         ),
-
                                       ],
                                     ),
-                                    SizedBox(height: 10,),
-                                    if(snapshot.data![index].requirementTypes == false)
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    if (snapshot
+                                            .data![index].requirementTypes ==
+                                        false)
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          Text(AppLocalizations.of(context)!.translate("Expected Salary") ?? "Expected Salary" ),Text(":- ${snapshot.data![index].salary }"),
+                                          Text(AppLocalizations.of(context)!
+                                                  .translate(
+                                                      "Expected Salary") ??
+                                              "Expected Salary"),
+                                          Text(
+                                              ":- ${snapshot.data![index].salary}"),
                                         ],
                                       ),
-                                    if(snapshot.data![index].requirementTypes == true)
+                                    if (snapshot
+                                            .data![index].requirementTypes ==
+                                        true)
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          Text(AppLocalizations.of(context)!.translate("Expected Price per piece") ?? "Expected Price per piece"),
-                                          Text(":- ${snapshot.data![index].price }"),
+                                          Text(AppLocalizations.of(context)!
+                                                  .translate(
+                                                      "Expected Price per piece") ??
+                                              "Expected Price per piece"),
+                                          Text(
+                                              ":- ${snapshot.data![index].price}"),
                                         ],
                                       ),
-
                                   ],
                                 ),
                               ),
-                            )
-                            ,
+                            ),
                           );
                         }),
                   );
@@ -226,15 +265,14 @@ class _employee_viewState extends State<employee_view_job_post> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/diamondtype/diamondtype"),
+        Uri.parse("https://diamond-server.vercel.app/diamondtype/diamondtype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
     try {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        print(data["data"]);
+
         setState(() {
           diamondTypeList = data["data"];
           //dropdownValue1 = diamondTypeList![0]["diamondType"];
@@ -249,8 +287,7 @@ class _employee_viewState extends State<employee_view_job_post> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/worktype/worktype"),
+        Uri.parse("https://diamond-server.vercel.app/worktype/worktype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
@@ -262,7 +299,7 @@ class _employee_viewState extends State<employee_view_job_post> {
           workTypeList!.insert(0, {"diamondWorkType": "All"});
           dropdownValue2 = workTypeList![0]["diamondWorkType"];
         });
-        //  print(workTypeList);
+
       }
     } catch (e) {}
   }

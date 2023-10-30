@@ -1,5 +1,17 @@
 flutter_native_splash:
-  color: "01dfdf"
-  fullscreen: true
-  image: assets/logo.png
-  android: true
+  color: "FFFFFF"                # Background color in hexadecimal format
+  image: assets/logo.png         # Path to your splash screen image
+  android: true                  # Configure for Android
+  ios: true                      # Configure for iOS
+            # Fill the entire screen with the splash image
+  fit: BoxFit.fill              # Use BoxFit.cover to stretch the image to fill the screen
+  alignment: Alignment.center    # Center the image within the screen
+
+  androidNavigationBarColor: "#000000"  # Background color of Android navigation bar
+  androidStatusBarColor: "#ffffff"      # Status bar color on Android
+  iosNavigationBarColor: "#000000"      # Background color of iOS navigation bar
+  iosStatusBarStyle: "light_content"
+  android_13:
+    color: "#01DADF"
+    image: assets/logo1.png
+

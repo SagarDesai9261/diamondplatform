@@ -1,6 +1,7 @@
 import 'package:diamondplatform/Widget/contactList.dart';
 import 'package:diamondplatform/Widget/personList.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 
@@ -48,59 +49,68 @@ class MyListTile extends StatelessWidget {
               tileColor: Colors.white,
               title: Column(
                 children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.diamond,color: Colors.blue,),
-                            /*Image.asset(
-                              'assets/diamond.png',
-                              heig  ht: 28,
-                            ),*/
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "${AppLocalizations.of(context)!.translate(jobPost!.departmentName) ?? jobPost!.departmentName }",
-                              style: TextStyle(color: Colors.black,
-                                  fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Row(
-                          children: [
-                            /*Image.asset(
-                              'assets/diamond.png',
-                              height: 28,
-                            ),*/
-                            Icon(Icons.diamond,color: Colors.blue),
-                            SizedBox(
-                              width: 5,
-                            ),
-                                Text(
-                                  "${AppLocalizations.of(context)!.translate(jobPost!.designationName) ?? jobPost!.designationName }",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16, fontWeight: FontWeight.w500),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/department.svg',
+                            semanticsLabel: 'My SVG Image',
+                            height: 20,
+                            width: 20,
+                          ),
+                          /*Image.asset(
+                            'assets/diamond.png',
+                            heig  ht: 28,
+                          ),*/
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "${AppLocalizations.of(context)!.translate(jobPost!.departmentName) ?? jobPost!.departmentName }",
+                            style: TextStyle(color: Colors.black,
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Row(
+                        children: [
+                          /*Image.asset(
+                            'assets/diamond.png',
+                            height: 28,
+                          ),*/
+                          SvgPicture.asset(
+                            'assets/designation.svg',
+                            semanticsLabel: 'My SVG Image',
+                            height: 20,
+                            width: 20,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                              Text(
+                                "${AppLocalizations.of(context)!.translate(jobPost!.designationName) ?? jobPost!.designationName }",
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Colors.black,
+                                    fontSize: 16, fontWeight: FontWeight.w500),
 
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Edit_Job_Post(jobPost: jobPost,)));
-                          },
-                          icon : Icon(Icons.edit),
-                          color: Colors.black,
-                        )
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: 10,),
+                      IconButton(
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Edit_Job_Post(jobPost: jobPost,)));
+                        },
+                        icon : Icon(Icons.edit),
+                        color: Colors.black,
+                      )
+                    ],
                   ),
                   //second row
                   Row(

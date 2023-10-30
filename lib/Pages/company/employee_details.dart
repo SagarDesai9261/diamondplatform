@@ -24,7 +24,7 @@ class _employee_viewState extends State<employee_view> {
   String? dropdownValue2;
   String? companyname;
   String selectedOption3 = 'Option 1';
-  List<String> options = ['Option 1', 'Option 2','Option 3'];
+  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
   @override
   void initState() {
     // TODO: implement initState
@@ -37,8 +37,8 @@ class _employee_viewState extends State<employee_view> {
   List<String> cities = [];
   String? selectedCity = 'Bhavnagar';
   Future<void> fetchCities() async {
-    final response = await http.get(
-        Uri.parse('https://diamond-platform-12038fd67b59.herokuapp.com/city'));
+    final response =
+        await http.get(Uri.parse('https://diamond-server.vercel.app/city'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['data'] != null && data['data'] is List) {
@@ -47,7 +47,10 @@ class _employee_viewState extends State<employee_view> {
               city['cityName'] != null
                   ? city['cityName'].toString()
                   : '')); // Convert to string, handle null
+          cities!.insert(0,  "All");
+          selectedCity  = cities[0];
         });
+
       } else {
         throw Exception('Invalid city data format');
       }
@@ -63,7 +66,7 @@ class _employee_viewState extends State<employee_view> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-         /*   Row(
+            /*   Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
@@ -150,11 +153,17 @@ class _employee_viewState extends State<employee_view> {
               ],
             ),*/
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 14),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 3.0, horizontal: 14),
               child: DropdownButtonFormField<String>(
                 value: selectedCity ?? "choose the city",
                 items: cities.map((String city) {
-                  return DropdownMenuItem<String>(value: city, child: Text(AppLocalizations.of(context)!.translate('city')??"city"),);
+                  return DropdownMenuItem<String>(
+                    value: city,
+                    child: Text(
+                        AppLocalizations.of(context)!.translate(city) ??
+                            city),
+                  );
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -173,160 +182,210 @@ class _employee_viewState extends State<employee_view> {
             StreamBuilder(
                 stream: employee_display().fetchEmployee(),
                 builder: (context, snapshot) {
-                  if(snapshot.hasError){
-                    return Center(child: Text("Employee data display error"),);
-                  }
-                  else if(snapshot.connectionState == ConnectionState.waiting){
-                    return Center(child: CircularProgressIndicator(),);
-                  }
-                  print(snapshot.data!.length);
-
-                  var filterdata = snapshot.data;
-                  if(selectedCity != null){
-                    filterdata = filterdata!.where((element) => element.city == selectedCity).toList();
-                  }
-                  if(filterdata!.length == 0){
-                    return Container(
-                      child:Text(AppLocalizations.of(context)!.translate("No Employees Found")??"No Employees Found")
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text("Employee data display error"),
+                    );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
                   }
 
+
+                  var filterdata = snapshot.data;
+                  if(selectedCity == "All"){
+                    filterdata = filterdata;
+                  }
+                  else if (selectedCity != null) {
+                    filterdata = filterdata!
+                        .where((element) => element.city == selectedCity)
+                        .toList();
+                  }
+
+                  if (filterdata!.length == 0) {
+                    return Container(
+                        child: Text(AppLocalizations.of(context)!
+                                .translate("No Employees Found") ??
+                            "No Employees Found"));
+                  }
+
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height * .71,
+                    height: MediaQuery.of(context).size.height * .68,
                     child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context,index){
-                        if(snapshot.data![index].companyName != "" || snapshot.data![index].companyName != null){
-                          companyname = snapshot.data![index]!.companyName.toString();
-                          if(companyname!.length > 25){
-                            companyname = companyname!.substring(0,25);
+                        itemCount: filterdata!.length,
+                        itemBuilder: (context, index) {
+                          if (filterdata![index].companyName != "" ||
+                              filterdata![index].companyName != null) {
+                            companyname =
+                                filterdata![index]!.companyName.toString();
+                            if (companyname!.length > 25) {
+                              companyname = companyname!.substring(0, 25);
+                            }
                           }
 
-
-                        }
-                          print("${snapshot.data![index].companyName}");
-                      return Container(
-                        margin: EdgeInsets.all(5),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          //border: Border.all(),
-
-                        ),
-                        child:Card(
-                          elevation: 5, // Add elevation for a shadow effect
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15), // Rounded corners
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          return Container(
+                            margin: EdgeInsets.all(5),
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              //border: Border.all(),
+                            ),
+                            child: Card(
+                              elevation: 5, // Add elevation for a shadow effect
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    15), // Rounded corners
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.translate("Name:") ??"Name:",
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${snapshot.data![index].name}",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.translate("Position Name:") ??"Position Name:".tr(),
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${AppLocalizations.of(context)!.translate(snapshot.data![index].designation!)??snapshot.data![index].designation}",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-
-                                Text(
-                                  AppLocalizations.of(context)!.translate("Address:") ?? "Address:".tr(),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "${snapshot.data![index].adress}, ${snapshot.data![index].city}",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                SizedBox(height: 16),
-
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.translate("Mobile:") ??"Mobile:".tr(),
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${snapshot.data![index].mobileNumber}",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.translate("Current Company :-") ??"Current Company :-".tr(),
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                       snapshot.data![index].companyName == null ||snapshot.data![index].companyName == "" || snapshot.data![index].companyName == "null" ? Text(
-                                          "None",
-                                          style: TextStyle(fontSize: 16),
-                                        ) : Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-
-                                            Text(companyname.toString(),),
-                                            snapshot.data![index].isSalaryMethod == true ? Text(snapshot.data![index].salary.toString() +  " ${AppLocalizations.of(context)!.translate("per month") ??"per Month"} " ) : Text(snapshot.data![index].price.toString()+ "per piece".tr())
+                                            Text(
+                                              AppLocalizations.of(context)!
+                                                      .translate("Name:") ??
+                                                  "Name:",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${filterdata![index].name}",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!
+                                                      .translate(
+                                                          "Position Name:") ??
+                                                  "Position Name:".tr(),
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${AppLocalizations.of(context)!.translate(filterdata![index].designation!) ?? filterdata![index].designation}",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                              .translate("Address:") ??
+                                          "Address:".tr(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${filterdata![index].adress}, ${filterdata![index].city}",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!
+                                                      .translate("Mobile:") ??
+                                                  "Mobile:".tr(),
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${snapshot.data![index].mobileNumber}",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!
+                                                      .translate(
+                                                          "Current Company :-") ??
+                                                  "Current Company :-",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            snapshot.data![index].companyName ==
+                                                        null ||
+                                                filterdata![index]
+                                                            .companyName ==
+                                                        "" ||
+                                                filterdata![index]
+                                                            .companyName ==
+                                                        "null"
+                                                ? Text(
+                                                    "None",
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  )
+                                                : Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        companyname.toString(),
+                                                      ),
+                                                      filterdata![index]
+                                                                  .isSalaryMethod ==
+                                                              true
+                                                          ? Text(filterdata![index]
+                                                                  .salary
+                                                                  .toString() +
+                                                              " ${AppLocalizations.of(context)!.translate("per month") ?? "per Month"} ")
+                                                          : Text(filterdata![index]
+                                                                  .price
+                                                                  .toString() +
+                                                              "per piece".tr())
+                                                    ],
+                                                  ),
                                           ],
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        )
-                        ,
-                      );
-                    }),
+                          );
+                        }),
                   );
                 })
           ],
@@ -339,15 +398,14 @@ class _employee_viewState extends State<employee_view> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/diamondtype/diamondtype"),
+        Uri.parse("https://diamond-server.vercel.app/diamondtype/diamondtype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
     try {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        print(data["data"]);
+
         setState(() {
           diamondTypeList = data["data"];
           //dropdownValue1 = diamondTypeList![0]["diamondType"];
@@ -362,8 +420,7 @@ class _employee_viewState extends State<employee_view> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/worktype/worktype"),
+        Uri.parse("https://diamond-server.vercel.app/worktype/worktype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
@@ -375,7 +432,7 @@ class _employee_viewState extends State<employee_view> {
           workTypeList!.insert(0, {"diamondWorkType": "All"});
           dropdownValue2 = workTypeList![0]["diamondWorkType"];
         });
-        //  print(workTypeList);
+
       }
     } catch (e) {}
   }

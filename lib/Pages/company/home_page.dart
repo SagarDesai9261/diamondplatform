@@ -36,6 +36,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
     // TODO: Initialize Google Mobile Ads SDK
     return MobileAds.instance.initialize();
   }
+
   String? _selecteddepartment;
   String? _selecteddesignation;
 
@@ -51,9 +52,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
   String? dropdownValue1;
   String? dropdownValue2;
   String selectedOption3 = 'Option 1';
-  List<String> options = ['Option 1', 'Option 2','Option 3'];
-
-
+  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
 
   late CircularBottomNavigationController _navigationController;
 
@@ -90,11 +89,18 @@ class _Home_Page_companyState extends State<Home_Page_company> {
     bannerProvider.fetchBanners();
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.translate('Diamond Platform')??"Diamond Platform"),
+        title: Text(
+            AppLocalizations.of(context)!.translate('Job Pulse') ??
+                "Job Pulse"),
         actions: [
-          IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> NotificationPage()));
-          }, icon: Icon(Icons.notifications_active_outlined))
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationPage()));
+              },
+              icon: Icon(Icons.notifications_active_outlined))
         ],
       ),
       drawer: const CustomDrawer(
@@ -106,48 +112,47 @@ class _Home_Page_companyState extends State<Home_Page_company> {
             child: bodyContainer(),
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
           ),
-          Align(alignment: Alignment.bottomCenter, child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              bottomNav(context),
-              if (_bannerAd != null)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: _bannerAd!.size.width.toDouble(),
-                    height: _bannerAd!.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd!),
-                  ),
-                ),
-              if (_bannerAd == null)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width * .8,
-                    height: MediaQuery.of(context).size.height * .04,
-                    decoration: BoxDecoration(
-                        border: Border.all()
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  bottomNav(context),
+                  if (_bannerAd != null)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: _bannerAd!.size.width.toDouble(),
+                        height: _bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _bannerAd!),
+                      ),
                     ),
-                    child: const Text("No Ads "),
-                  ),
-                ),
-            ],
-          )),
-
+                  if (_bannerAd == null)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width * .8,
+                        height: MediaQuery.of(context).size.height * .04,
+                        decoration: BoxDecoration(border: Border.all()),
+                        child: const Text("No Ads "),
+                      ),
+                    ),
+                ],
+              )),
         ],
       ),
     );
   }
 
   Widget bodyContainer() {
-  //  Color? selectedColor = tabItems[selectedPos].circleColor;
+    //  Color? selectedColor = tabItems[selectedPos].circleColor;
     String slogan;
     switch (selectedPos) {
       case 0:
         return Home_page_view();
-        //slogan = "Family, Happiness, Food";
+      //slogan = "Family, Happiness, Food";
       case 1:
         return const employee_view();
       case 2:
@@ -166,7 +171,6 @@ class _Home_Page_companyState extends State<Home_Page_company> {
       child: Container(
         width: double.infinity,
         height: double.infinity,
-
         child: Center(
           child: Text(
             slogan,
@@ -192,7 +196,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
     List<TabItem> tabItems = List.of([
       TabItem(
         Icons.home,
-        AppLocalizations.of(context)!.translate("Home") ?? "Home" ,
+        AppLocalizations.of(context)!.translate("Home") ?? "Home",
         Colors.blue,
         labelStyle: const TextStyle(
           color: Colors.red,
@@ -201,7 +205,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
       ),
       TabItem(
         Icons.supervised_user_circle,
-        AppLocalizations.of(context)!.translate("Employee") ?? "Employee" ,
+        AppLocalizations.of(context)!.translate("Employee") ?? "Employee",
         Colors.orange,
         labelStyle: const TextStyle(
           color: Colors.red,
@@ -210,32 +214,28 @@ class _Home_Page_companyState extends State<Home_Page_company> {
       ),
       TabItem(
           Icons.history,
-          AppLocalizations.of(context)!.translate("History") ?? "History" ,
+          AppLocalizations.of(context)!.translate("History") ?? "History",
           Colors.red,
-          labelStyle: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold
-          )
-        // circleStrokeColor: Colors.black,
-      ),
+          labelStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)
+          // circleStrokeColor: Colors.black,
+          ),
       TabItem(
           Icons.add,
-          AppLocalizations.of(context)!.translate("Job Post") ?? "Job Post" ,
+          AppLocalizations.of(context)!.translate("Job Post") ?? "Job Post",
           Colors.cyan,
           labelStyle: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.red,
-          )
-      ),
+          )),
       TabItem(
           Icons.line_style,
-          AppLocalizations.of(context)!.translate("Employee Job Post") ?? "Employee Job Post" ,
+          AppLocalizations.of(context)!.translate("Employee Job Post") ??
+              "Employee Job Post",
           Colors.green,
           labelStyle: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.red,
-          )
-      ),
+          )),
     ]);
     return CircularBottomNavigation(
       tabItems,
@@ -259,7 +259,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
       selectedCallback: (int? selectedPos) {
         setState(() {
           this.selectedPos = selectedPos ?? 0;
-          print(_navigationController.value);
+
         });
       },
     );
@@ -294,7 +294,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        isExpanded:true,
+                        isExpanded: true,
                         hint: const Text("Department"),
                         value: _selecteddepartment,
                         onChanged: (newValue) {
@@ -307,13 +307,17 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                         items: department!.map((diamondTypeList) {
                           return DropdownMenuItem<String>(
                             value: diamondTypeList["departmentName"],
-                            child: Text(AppLocalizations.of(context)!.translate(diamondTypeList["departmentName"]) ?? diamondTypeList["departmentName"] ),
+                            child: Text(AppLocalizations.of(context)!.translate(
+                                    diamondTypeList["departmentName"]) ??
+                                diamondTypeList["departmentName"]),
                           );
                         }).toList(),
                       ),
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Container(
                     width: MediaQuery.of(context).size.width * .45,
                     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -323,7 +327,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        isExpanded:true,
+                        isExpanded: true,
                         hint: const Text("Designation"),
                         value: _selecteddesignation,
                         onChanged: (newValue) {
@@ -335,17 +339,22 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                         items: designation!.map((workTypeList) {
                           return DropdownMenuItem<String>(
                             value: workTypeList["designationName"],
-                            child: Text(AppLocalizations.of(context)!.translate(workTypeList["designationName"]) ??workTypeList["designationName"]),
+                            child: Text(AppLocalizations.of(context)!.translate(
+                                    workTypeList["designationName"]) ??
+                                workTypeList["designationName"]),
                           );
                         }).toList(),
                       ),
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Container(
                     margin: const EdgeInsets.only(top: 5),
                     height: MediaQuery.of(context).size.height * .06,
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(30),
@@ -359,13 +368,15 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                             selectedOption3 = newValue!;
                           });
                         },
-                        items:
-                            options.map<DropdownMenuItem<String>>((String value) {
+                        items: options
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: value == "Option 1"
                                 ? Image.asset("assets/male.png")
-                                : value == "Option 2" ?  Image.asset("assets/female.png") :Image.asset("assets/both.png") ,
+                                : value == "Option 2"
+                                    ? Image.asset("assets/female.png")
+                                    : Image.asset("assets/both.png"),
                           );
                         }).toList(),
                       ),
@@ -376,53 +387,59 @@ class _Home_Page_companyState extends State<Home_Page_company> {
             ),
             BannerSlider(),
             StreamBuilder<List<JobPost>>(
-              stream: jobPostService.fetchJobPosts(), // Make sure this returns a Stream<List<JobPost>>
+              stream: jobPostService
+                  .fetchJobPosts(), // Make sure this returns a Stream<List<JobPost>>
               builder: (context, snapshot) {
-               // print(snapshot.data!.length);
+
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   print(snapshot.error);
                   return const Center(child: Text('Error fetching data'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text(AppLocalizations.of(context)!.translate('No job posts available')??"No job posts available"));
+                  return Center(
+                      child: Text(AppLocalizations.of(context)!
+                              .translate('No job posts available') ??
+                          "No job posts available"));
                 } else {
-                 // var filteredJobPosts;
+                  // var filteredJobPosts;
                   var filteredJobPosts;
 
-                  if (_selecteddepartment == "All"  && selectedOption3 =="Option 1" ) {
+                  if (_selecteddepartment == "All" &&
+                      selectedOption3 == "Option 1") {
                     filteredJobPosts = snapshot.data!.where((jobPost) {
-                      return jobPost.gender =="Male";
+                      return jobPost.gender == "Male";
                     }).toList();
                     // filteredJobPosts = snapshot.data;
-                  }
-                  else if(_selecteddepartment == "All"   && selectedOption3 =="Option 2"){
+                  } else if (_selecteddepartment == "All" &&
+                      selectedOption3 == "Option 2") {
                     filteredJobPosts = snapshot.data!.where((jobPost) {
-                      return jobPost.gender =="Female";
+                      return jobPost.gender == "Female";
                     }).toList();
-                  }
-                  else if(_selecteddesignation == "All" && selectedOption3 == "Option 1"){
+                  } else if (_selecteddesignation == "All" &&
+                      selectedOption3 == "Option 1") {
                     filteredJobPosts = snapshot.data!.where((jobPost) {
-                      return jobPost.departmentName == _selecteddepartment && jobPost.gender =="Male";
+                      return jobPost.departmentName == _selecteddepartment &&
+                          jobPost.gender == "Male";
                     }).toList();
-                  }
-                  else if(_selecteddesignation == "All" && selectedOption3 == "Option 2"){
+                  } else if (_selecteddesignation == "All" &&
+                      selectedOption3 == "Option 2") {
                     filteredJobPosts = snapshot.data!.where((jobPost) {
-                      return jobPost.departmentName == _selecteddepartment && jobPost.gender =="Female";
+                      return jobPost.departmentName == _selecteddepartment &&
+                          jobPost.gender == "Female";
                     }).toList();
-                  }
-
-                  else if(selectedOption3 == "Option 1") {
+                  } else if (selectedOption3 == "Option 1") {
                     filteredJobPosts = snapshot.data!.where((jobPost) {
-                      return jobPost.departmentName == _selecteddepartment && jobPost.designationName == _selecteddesignation && jobPost.gender == "Male";
+                      return jobPost.departmentName == _selecteddepartment &&
+                          jobPost.designationName == _selecteddesignation &&
+                          jobPost.gender == "Male";
                     }).toList();
-
-                  }
-                  else if(selectedOption3 == "Option 2") {
+                  } else if (selectedOption3 == "Option 2") {
                     filteredJobPosts = snapshot.data!.where((jobPost) {
-                      return jobPost.departmentName == _selecteddepartment && jobPost.designationName == _selecteddesignation  && jobPost.gender == "Female";
+                      return jobPost.departmentName == _selecteddepartment &&
+                          jobPost.designationName == _selecteddesignation &&
+                          jobPost.gender == "Female";
                     }).toList();
-
                   }
 
                   // Your filtering logic here...
@@ -434,7 +451,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                   }
 
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height * .5,
+                    height: MediaQuery.of(context).size.height < 650 ? MediaQuery.of(context).size.height * .4 : MediaQuery.of(context).size.height * .5,
                     child: ListView.builder(
                       itemCount: filteredJobPosts.length,
                       itemBuilder: (context, index) {
@@ -452,47 +469,55 @@ class _Home_Page_companyState extends State<Home_Page_company> {
                 }
               },
             ),
-
-
           ],
         ),
       ),
     );
   }
+
   Future<bool> showExitPopup() async {
     return await showDialog(
-      //show confirm dialogue
-      //the return value will be from "Yes" or "No" options
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Exit App'),
-        content:  Text(AppLocalizations.of(context)!.translate('Do you want to exit an App?') ?? "Do you want to exit and App?"),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            //return false when click on "NO"
-            child: Text(AppLocalizations.of(context)!.translate('No') ?? "No"),
+          //show confirm dialogue
+          //the return value will be from "Yes" or "No" options
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Exit App'),
+            content: Text(AppLocalizations.of(context)!
+                    .translate('Do you want to exit an App?') ??
+                "Do you want to exit and App?"),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                //return false when click on "NO"
+                child:
+                    Text(AppLocalizations.of(context)!.translate('No') ?? "No"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final navigator = Navigator.of(context);
+
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Home_Page_company()),
+                      (route) => false);
+                  SystemNavigator.pop();
+                },
+                //return true when click on "Yes"
+                child: Text(
+                    AppLocalizations.of(context)!.translate('Yes') ?? "Yes"),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              final navigator = Navigator.of(context);
-              print(" Navigation length : "+ "${navigator.widget.pages.length}");
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home_Page_company()), (route) => false);
-              SystemNavigator.pop();},
-            //return true when click on "Yes"
-            child: Text(AppLocalizations.of(context)!.translate('Yes') ?? "Yes"),
-          ),
-        ],
-      ),
-    ) ??
+        ) ??
         false; //if showDialouge had returned null, then return false
   }
+
   Future<void> diamondType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/diamondtype/diamondtype"),
+        Uri.parse("https://diamond-server.vercel.app/diamondtype/diamondtype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
@@ -514,8 +539,7 @@ class _Home_Page_companyState extends State<Home_Page_company> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     final response = await http.get(
-        Uri.parse(
-            "https://diamond-platform-12038fd67b59.herokuapp.com/worktype/worktype"),
+        Uri.parse("https://diamond-server.vercel.app/worktype/worktype"),
         headers: {
           'Authorization': 'Bearer $token',
         });
@@ -527,36 +551,38 @@ class _Home_Page_companyState extends State<Home_Page_company> {
           workTypeList!.insert(0, {"diamondWorkType": "All"});
           dropdownValue2 = workTypeList![0]["diamondWorkType"];
         });
-        //  print(workTypeList);
+
       }
     } catch (e) {}
   }
-  Future<void> fetch_department() async{
+
+  Future<void> fetch_department() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String,dynamic> data = json.decode(prefs.getString("user_details")!);
-    final response = await http.get(Uri.parse("https://diamond-platform-12038fd67b59.herokuapp.com/department/department/${data["industry"]}"));
-    try{
-      if(response.statusCode == 200){
+    Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
+    final response = await http.get(Uri.parse(
+        "https://diamond-server.vercel.app/department/department/${data["industry"]}"));
+    try {
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         setState(() {
-            department = data["data"];
-            department!.insert(0, {"departmentName": "All"});
-            _selecteddepartment = department![0]["departmentName"];
+          department = data["data"];
+          department!.insert(0, {"departmentName": "All"});
+          _selecteddepartment = department![0]["departmentName"];
         });
       }
-
-    }
-    catch(e){
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
   }
-  fetch_designation()async{
-    var endpointUrl = 'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+
+  fetch_designation() async {
+    var endpointUrl =
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var data = json.decode(response.body);
       setState(() {
         designation = data["data"];
@@ -564,14 +590,11 @@ class _Home_Page_companyState extends State<Home_Page_company> {
         designation!.insert(0, {"designationName": "All"});
         _selecteddesignation = designation![0]["designationName"];
       });
-
-    }
-    else{
+    } else {
       setState(() {
         designation = [];
       });
       //  designation = [];
     }
-
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:diamondplatform/Pages/employee/create_job_post.dart';
 import 'package:diamondplatform/main.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:frino_icons/frino_icons.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:diamondplatform/Pages/employee/notification_data.dart';
@@ -30,7 +33,6 @@ class Home_page_employee extends StatefulWidget {
 }
 
 class _Home_page_employeeState extends State<Home_page_employee> {
-
   Future<InitializationStatus> _initGoogleMobileAds() {
     // TODO: Initialize Google Mobile Ads SDK
     return MobileAds.instance.initialize();
@@ -126,7 +128,8 @@ class _Home_page_employeeState extends State<Home_page_employee> {
       ),
       TabItem(
         Icons.add,
-        AppLocalizations.of(context)!.translate("Create Post") ?? "Create New Post",
+        AppLocalizations.of(context)!.translate("Create Post") ??
+            "Create New Post",
         Colors.green,
         labelStyle: const TextStyle(
           color: Colors.red,
@@ -137,12 +140,19 @@ class _Home_page_employeeState extends State<Home_page_employee> {
     return ScaffoldMessenger(
       child: Scaffold(
         appBar: AppBar(
-          title:  Text(AppLocalizations.of(context)!.translate('Diamond Platform') ?? "Diamond Platform"),
-        actions: [
-          IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationPage()));
-          }, icon: const Icon(Icons.notifications_active_outlined))
-        ],
+          title: Text(
+              AppLocalizations.of(context)!.translate('Job Pulse') ??
+                  "Job Pulse"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationPage()));
+                },
+                icon: const Icon(Icons.notifications_active_outlined))
+          ],
         ),
         body: Stack(
           children: <Widget>[
@@ -150,64 +160,62 @@ class _Home_page_employeeState extends State<Home_page_employee> {
               padding: EdgeInsets.only(bottom: bottomNavBarHeight),
               child: bodyContainer(),
             ),
-            Align(alignment: Alignment.bottomCenter, child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-              CircularBottomNavigation(
-              tabItems,
-              controller: _navigationController,
-              selectedPos: selectedPos,
-              barHeight: bottomNavBarHeight,
-              // use either barBackgroundColor or barBackgroundGradient to have a gradient on bar background
-              barBackgroundColor: Colors.white,
-              // barBackgroundGradient: LinearGradient(
-              //   begin: Alignment.bottomCenter,
-              //   end: Alignment.topCenter,
-              //   colors: [
-              //     Colors.blue,
-              //     Colors.red,
-              //   ],
-              // ),
-              backgroundBoxShadow: const <BoxShadow>[
-                BoxShadow(color: Colors.black45, blurRadius: 10.0),
-              ],
-              animationDuration: const Duration(milliseconds: 300),
-              selectedCallback: (int? selectedPos) {
-                setState(() {
-                  this.selectedPos = selectedPos ?? 0;
-                  if (kDebugMode) {
-                    print(_navigationController.value);
-                  }
-                });
-              },
-            ),
-                if (_bannerAd != null)
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                      width: _bannerAd!.size.width.toDouble(),
-                      height: _bannerAd!.size.height.toDouble(),
-                      child: AdWidget(ad: _bannerAd!),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    CircularBottomNavigation(
+                      tabItems,
+                      controller: _navigationController,
+                      selectedPos: selectedPos,
+                      barHeight: bottomNavBarHeight,
+                      // use either barBackgroundColor or barBackgroundGradient to have a gradient on bar background
+                      barBackgroundColor: Colors.white,
+                      // barBackgroundGradient: LinearGradient(
+                      //   begin: Alignment.bottomCenter,
+                      //   end: Alignment.topCenter,
+                      //   colors: [
+                      //     Colors.blue,
+                      //     Colors.red,
+                      //   ],
+                      // ),
+                      backgroundBoxShadow: const <BoxShadow>[
+                        BoxShadow(color: Colors.black45, blurRadius: 10.0),
+                      ],
+                      animationDuration: const Duration(milliseconds: 300),
+                      selectedCallback: (int? selectedPos) {
+                        setState(() {
+                          this.selectedPos = selectedPos ?? 0;
+                          if (kDebugMode) {
+                            print(_navigationController.value);
+                          }
+                        });
+                      },
                     ),
-                  ),
-                if (_bannerAd == null)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width * .8,
-                    height: MediaQuery.of(context).size.height * .04,
-                    decoration: BoxDecoration(
-                        border: Border.all()
-                    ),
-                    child: const Text("No Ads "),
-                  ),
-                ),
-              ],
-            )),
-
-
+                    if (_bannerAd != null)
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          width: _bannerAd!.size.width.toDouble(),
+                          height: _bannerAd!.size.height.toDouble(),
+                          child: AdWidget(ad: _bannerAd!),
+                        ),
+                      ),
+                    if (_bannerAd == null)
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width * .8,
+                          height: MediaQuery.of(context).size.height * .04,
+                          decoration: BoxDecoration(border: Border.all()),
+                          child: const Text("No Ads "),
+                        ),
+                      ),
+                  ],
+                )),
           ],
         ),
         drawer: const CustomDrawer(
@@ -215,11 +223,8 @@ class _Home_page_employeeState extends State<Home_page_employee> {
         ),
         floatingActionButton: Column(
           children: [
-
             Container(
-              decoration: const BoxDecoration(
-                color: Colors.blue
-              ),
+              decoration: const BoxDecoration(color: Colors.blue),
             )
           ],
         ),
@@ -237,40 +242,42 @@ class _Home_page_employeeState extends State<Home_page_employee> {
         return Create_job_post();
     }
     return Container();
-
   }
+
   Future<bool> showExitPopup() async {
     return await showDialog(
-      //show confirm dialogue
-      //the return value will be from "Yes" or "No" options
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Exit App').tr(),
-        content: Text(AppLocalizations.of(context)!.translate('Do you want to exit an App?')??"Do you want to exit an App?'"),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            //return false when click on "NO"
-            child: const Text('No').tr(),
+          //show confirm dialogue
+          //the return value will be from "Yes" or "No" options
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Exit App').tr(),
+            content: Text(AppLocalizations.of(context)!
+                    .translate('Do you want to exit an App?') ??
+                "Do you want to exit an App?'"),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                //return false when click on "NO"
+                child: const Text('No').tr(),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home_page_employee()), (route) => false);
+                  SystemNavigator.pop();
+                },
+                //return true when click on "Yes"
+                child: const Text('Yes').tr(),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-             // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home_page_employee()), (route) => false);
-              SystemNavigator.pop();
-            },
-            //return true when click on "Yes"
-            child: const Text('Yes').tr(),
-          ),
-        ],
-      ),
-    ) ??
+        ) ??
         false; //if showDialouge had returned null, then return false
   }
-  home_view(){
-    return WillPopScope(
-        onWillPop: showExitPopup,
-        child: const Job_post());
+
+  home_view() {
+    return WillPopScope(onWillPop: showExitPopup, child: const Job_post());
   }
+
   Widget bottomNav() {
     return CircularBottomNavigation(
       tabItems,
@@ -326,10 +333,11 @@ class _Job_postState extends State<Job_post> {
       setState(() => sharedPrefs = prefs);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final bannerProvider =
-    Provider.of<BannerDataProvider>(context, listen: false);
+        Provider.of<BannerDataProvider>(context, listen: false);
     bannerProvider.fetchBanners();
 
     return Scaffold(
@@ -338,41 +346,40 @@ class _Job_postState extends State<Job_post> {
           children: [
             BannerSlider(),
             StreamBuilder<List<JobPost>>(
-              stream: employee_job_post_details().fetchJobPosts(),
-              builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return const CircularProgressIndicator();
-                }
-                else if (snapshot.hasError){
-
-                }
-                return display_post(snapshot.data!);
-
-
-
-
-              }
-            ),
+                stream: employee_job_post_details().fetchJobPosts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {}
+                  return display_post(snapshot.data!);
+                }),
           ],
         ),
       ),
     );
   }
-  Widget display_post(List<JobPost> snapshotdata){
-    Map<String,dynamic> data = json.decode(sharedPrefs.getString("user_details")!);
-  // print(snapshotdata);
-    var filterdata =  snapshotdata.where((element) => element.designationName == data["designation"]).toList();
-    if(filterdata.length == 0){
-      return Center(child: Text(AppLocalizations.of(context)!.translate("No job posts available")??"No Job Post Found"));
+
+  Widget display_post(List<JobPost> snapshotdata) {
+    Map<String, dynamic> data =
+        json.decode(sharedPrefs.getString("user_details")!);
+
+    var filterdata = snapshotdata
+        .where((element) => element.designationName == data["designation"])
+        .toList();
+    if (filterdata.length == 0) {
+      return Center(
+          child: Text(AppLocalizations.of(context)!
+                  .translate("No job posts available") ??
+              "No Job Post Found"));
     }
-    //  print(filterdata.length);
-   //  var designation = data["designationName"].toString();
+
+    //  var designation = data["designationName"].toString();
     return SizedBox(
       height: MediaQuery.of(context).size.height * .56,
       child: ListView.builder(
           itemCount: filterdata.length,
-          itemBuilder: (context,index){
-         //   print(filterdata[index].designationName);
+          itemBuilder: (context, index) {
+
             return Container(
               height: 120,
               padding: const EdgeInsets.all(10),
@@ -388,7 +395,11 @@ class _Job_postState extends State<Job_post> {
                   onTap: () {
                     employee_add_count(filterdata[index].id);
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => JobPosts(post: filterdata[index],)));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => JobPosts(
+                                  post: filterdata[index],
+                                )));
                   },
                   child: ListTile(
                     //     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -396,7 +407,7 @@ class _Job_postState extends State<Job_post> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    title:  Column(
+                    title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SingleChildScrollView(
@@ -405,12 +416,18 @@ class _Job_postState extends State<Job_post> {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.diamond_outlined, color: Colors.blue),
+                                  SvgPicture.asset(
+                                    'assets/department.svg',
+                                    semanticsLabel: 'My SVG Image',
+                                    height: 20,
+                                    width: 20,
+                                  ),
                                   const SizedBox(width: 8),
                                   Text(filterdata[index].departmentName!,
                                       style: const TextStyle(
-                                        color: Colors.black,
-                                          fontSize: 18, fontWeight: FontWeight.bold)),
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                               const SizedBox(
@@ -418,11 +435,18 @@ class _Job_postState extends State<Job_post> {
                               ),
                               Row(
                                 children: [
-                                  const Icon(Icons.diamond_outlined, color: Colors.blue),
+                                  SvgPicture.asset(
+                                    'assets/designation.svg',
+                                    semanticsLabel: 'My SVG Image',
+                                    height: 20,
+                                    width: 20,
+                                  ),
                                   const SizedBox(width: 8),
                                   Text(filterdata[index].designationName!,
-                                      style: const TextStyle(color: Colors.black,
-                                          fontSize: 18, fontWeight: FontWeight.bold)),
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ],
@@ -431,8 +455,10 @@ class _Job_postState extends State<Job_post> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Text("${AppLocalizations.of(context)!.translate("Vacancy :") ?? "Vacancy :"}" ,
-                                style: const TextStyle(fontSize: 16, color: Colors.green)),
+                            Text(
+                                "${AppLocalizations.of(context)!.translate("Vacancy :") ?? "Vacancy :"}",
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.green)),
                             Text("${filterdata[index].numberOfEmp}")
                           ],
                         ),
@@ -442,7 +468,8 @@ class _Job_postState extends State<Job_post> {
                             const Icon(Icons.location_city, color: Colors.grey),
                             const SizedBox(width: 8),
                             Text("${filterdata[index].employeerName}",
-                                style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.grey)),
                           ],
                         ),
                       ],
@@ -453,28 +480,29 @@ class _Job_postState extends State<Job_post> {
     );
   }
 
-  employee_add_count(var id) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance() ;
-    Map<String,dynamic> data = json.decode(prefs.getString("user_details")!);
+  employee_add_count(var id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
     var token = prefs.getString("token");
     var name = data["name"];
     var mobileNumber = data["mobileNumber"];
     //var datetime = DateTime.now();
     DateTime now = DateTime.now();
     var formattedDate = DateFormat('dd/MM/yyyy HH:mm a').format(now);
-    print(formattedDate);
 
     //  print(id);
     try {
       var body = {
-        'name':name.toString(),
-        'phoneNumber':mobileNumber.toString(),
-        'currentDateAndTime':formattedDate.toString()
+        'name': name.toString(),
+        'phoneNumber': mobileNumber.toString(),
+        'currentDateAndTime': formattedDate.toString()
       };
       //   print(body);
-      var response = await http.post(Uri.parse(
-          "https://diamond-platform-12038fd67b59.herokuapp.com/viewjobs/employeeviewcount/${id}"),
-          body: body,headers: {
+      var response = await http.post(
+          Uri.parse(
+              "https://diamond-server.vercel.app/viewjobs/employeeviewcount/${id}"),
+          body: body,
+          headers: {
             'Authorization': 'Bearer $token',
           });
       // print(response.body);
@@ -483,8 +511,7 @@ class _Job_postState extends State<Job_post> {
         // snackBar().display(context, "Job post updated Successfully", Colors.green);
       }
       //print(response.statusCode);
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
     }
   }
@@ -539,190 +566,200 @@ class _JobPostsState extends State<JobPosts> {
   Widget build(BuildContext context) {
     var post = widget.post;
     return Scaffold(
-      appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.translate("Job Post Details") ?? "Job Post Details"),
-      ),
-      body:  ListView.builder(
-          itemCount: 1,
-          itemBuilder:(context,index){
-
-          return Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(AppLocalizations.of(context)!.translate(
-                        "Position Name:") ?? "Position Name",
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 5,),
-                      Row(
-                        children: [
-
-                          Text(AppLocalizations.of(context)!.translate(
-                            post!.designationName)?? post!.designationName,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10,),
-                  Text("${AppLocalizations.of(context)!.translate("Vacancy :")?? "Vacancy :"}  ${post.numberOfEmp}",style: const TextStyle(
-                    fontSize: 18,fontWeight: FontWeight.bold
-                  ),),
-                  const SizedBox(height: 10),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.currency_rupee),
-                          Text(
-                            post.requirementTypes
-                                ? "${post.price}  ${AppLocalizations.of(context)!.translate("per piece")?? "per piece"}"
-                                : "${post.salary}   ${AppLocalizations.of(context)!.translate("per month")?? "per month"}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.account_circle,
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            post.employeerName.toString(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
+        appBar: AppBar(
+          title: Text(
+              AppLocalizations.of(context)!.translate("Job Post Details") ??
+                  "Job Post Details"),
+        ),
+        body: ListView.builder(
+            itemCount: 1,
+            itemBuilder: (context, index) {
+              return Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              _showPhoneCallConfirmationDialog(
-                                  post.mobileNumber.toString(), post.id);
-                            },
-                            icon: const Icon(
-                              Icons.call,
-                              color: Colors.green,
+                          Text(
+                            AppLocalizations.of(context)!
+                                    .translate("Position Name:") ??
+                                "Position Name",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            "+91 ${post.mobileNumber.toString()}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!
+                                        .translate(post!.designationName) ??
+                                    post!.designationName,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "${AppLocalizations.of(context)!.translate("Vacancy :") ?? "Vacancy :"}  ${post.numberOfEmp}",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.green,
+                          Row(
+                            children: [
+                              const Icon(Icons.currency_rupee),
+                              Text(
+                                post.requirementTypes
+                                    ? "${post.price}  ${AppLocalizations.of(context)!.translate("per piece") ?? "per piece"}"
+                                    : "${post.salary}   ${AppLocalizations.of(context)!.translate("per month") ?? "per month"}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () {
-                              _openGoogleMaps(post.latitude, post.longitude);
-                            },
-                            child: Text(
-                              "${post.address}",
-                              style: const TextStyle(
-                                fontSize: 14,
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.account_circle,
                                 color: Colors.blue,
                               ),
-                            ),
+                              const SizedBox(width: 4),
+                              Text(
+                                post.employeerName.toString(),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                       Row(
                         children: [
-                          const Icon(
-                            Icons.location_city,
-                            color: Colors.deepOrange,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            post.cityName.toString(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  _showPhoneCallConfirmationDialog(
+                                      post.mobileNumber.toString(), post.id);
+                                },
+                                icon: const Icon(
+                                  Icons.call,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              Text(
+                                "+91 ${post.mobileNumber.toString()}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.green,
+                              ),
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: () {
+                                  _openGoogleMaps(
+                                      post.latitude, post.longitude);
+                                },
+                                child: Text(
+                                  "${post.address}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.location_city,
+                                color: Colors.deepOrange,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                post.cityName.toString(),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: TextButton(
+                          onPressed: () {
+                            _openGoogleMaps(post.latitude, post.longitude);
+                          },
+                          child: Text(AppLocalizations.of(context)!
+                                  .translate("Click to Navigate") ??
+                              "Click to Navigate"),
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: TextButton(
-                      onPressed: () {
-                        _openGoogleMaps(post.latitude, post.longitude);
-                      },
-                      child:  Text(AppLocalizations.of(context)!.translate("Click to Navigate") ?? "Click to Navigate"),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-
-        }
-      )
-
-    );
+                ),
+              );
+            }));
   }
-  void _openGoogleMaps(destinationLatitude,destinationLongitude) async {
-    final url = "https://www.google.com/maps/dir/?api=1&destination=$destinationLatitude,$destinationLongitude";
+
+  void _openGoogleMaps(destinationLatitude, destinationLongitude) async {
+    final url =
+        "https://www.google.com/maps/dir/?api=1&destination=$destinationLatitude,$destinationLongitude";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
   }
+
   void _launchPhoneCall(String phoneNumber) async {
     //set the number here
     bool? res = await FlutterPhoneDirectCaller.callNumber(phoneNumber);
   }
 
-  void _showPhoneCallConfirmationDialog(String phoneNumber,var id) {
+  void _showPhoneCallConfirmationDialog(String phoneNumber, var id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -749,27 +786,30 @@ class _JobPostsState extends State<JobPosts> {
       },
     );
   }
-  Mobile_add_count(var id) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance() ;
-    Map<String,dynamic> data = json.decode(prefs.getString("user_details")!);
+
+  Mobile_add_count(var id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
     var token = prefs.getString("token");
     var name = data["name"];
     var mobileNumber = data["mobileNumber"];
     DateTime now = DateTime.now();
     var formattedDate = DateFormat('dd/MM/yyyy HH:mm a').format(now);
-    print(formattedDate);
+
 
     // print(id);
     try {
       var body = {
-        'name':name.toString(),
-        'phoneNumber':mobileNumber.toString(),
-        'currentDateAndTime':formattedDate.toString()
+        'name': name.toString(),
+        'phoneNumber': mobileNumber.toString(),
+        'currentDateAndTime': formattedDate.toString()
       };
       // print(body);
-      var response = await http.post(Uri.parse(
-          "https://diamond-platform-12038fd67b59.herokuapp.com/viewjobs/mobileCallcount/${id}"),
-          body: body,headers: {
+      var response = await http.post(
+          Uri.parse(
+              "https://diamond-server.vercel.app/viewjobs/mobileCallcount/${id}"),
+          body: body,
+          headers: {
             'Authorization': 'Bearer $token',
           });
       // print(response.body);
@@ -778,8 +818,7 @@ class _JobPostsState extends State<JobPosts> {
         // snackBar().display(context, "Job post updated Successfully", Colors.green);
       }
       //print(response.statusCode);
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
     }
   }

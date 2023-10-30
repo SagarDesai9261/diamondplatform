@@ -14,7 +14,7 @@ import '../../Widget/snackbar.dart';
 import '../../model/service.dart';
 
 class ProfilePageEmployee extends StatefulWidget {
-  const ProfilePageEmployee({super.key});
+  //const ProfilePageEmployee({super.key});
 
   @override
   State<ProfilePageEmployee> createState() => _ProfilePageEmployeeState();
@@ -84,7 +84,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
         var responseString = utf8.decode(responseData);
         var jsonResponse = json.decode(responseString);
         profileImgPath = jsonResponse['iamge_path'];
-        print('$profileImgPath'); // Correct the key to "iamge_path"
+
 
         // Now you can set your image using the 'imagePath' variable
       } else {}
@@ -99,12 +99,11 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var data1 = json.decode(prefs.getString("user_details")!);
-    print("Data Are: ${json.encode(data1)}");
+
     var _id = data1["_id"];
     var _password = data1["password"];
-    print("Passowrd :" + _password);
-    final String apiUrl =
-        'https://diamond-platform-12038fd67b59.herokuapp.com/employee/${_id}';
+
+    final String apiUrl = 'https://diamond-server.vercel.app/employee/${_id}';
 
     final Map<String, dynamic> data = {
       'name': _nameController.text,
@@ -118,11 +117,10 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
       'designation': _selecteddesignation,
       'password': _password,
       'employeeImage': profileImgPath,
-      'companyName': company_Name.text ,
+      'companyName': company_Name.text,
       'isSalaryMethod': method == 1 ? true : false,
       'salary': salary.text,
       'price': price.text,
-
     };
 
     final response = await http.put(
@@ -137,7 +135,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
     if (response.statusCode == 200) {
       snackBar().display(context, 'Profile Updated Sucessfully', Colors.blue);
       // Successful update, handle accordingly
-      print('Profile updated successfully');
+
       // Parse the response body as JSON
       final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -145,7 +143,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
       final String message = responseData['message'];
 
       // Print the message or any other relevant data
-      print('${response.body}');
+
     } else {
       // Handle errors here
       print('Failed to update profile');
@@ -158,7 +156,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
     getApiEmployee().then((_) {
       setState(() {
         isLoading =
-        false; // After the response is received, set isLoading to false
+            false; // After the response is received, set isLoading to false
       });
     });
     fetchCities();
@@ -171,7 +169,8 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.translate('Profile Update') ?? "Profile Update"),
+        title: Text(AppLocalizations.of(context)!.translate('Profile Update') ??
+            "Profile Update"),
       ),
       body: Stack(children: [
         Form(
@@ -187,14 +186,16 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                     SizedBox(
                       height: 40,
                     ),
-                    profileImgPath == null || profileImgPath == "" ?
-                    CircleAvatar(
-                      maxRadius: 60,
-                        backgroundImage: AssetImage('assets/tree-736885_1280.jpg'),
-                    ):CircleAvatar(
-                      maxRadius: 60,
-                      backgroundImage: NetworkImage(profileImgPath),
-                    ),
+                    profileImgPath == null || profileImgPath == ""
+                        ? CircleAvatar(
+                            maxRadius: 60,
+                            backgroundImage:
+                                AssetImage('assets/tree-736885_1280.jpg'),
+                          )
+                        : CircleAvatar(
+                            maxRadius: 60,
+                            backgroundImage: NetworkImage(profileImgPath),
+                          ),
                     SizedBox(
                       height: 5,
                     ),
@@ -211,7 +212,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                           color: _isImageSelected
                               ? Colors.green
                               : Colors
-                              .blue, // Change color if image is selected
+                                  .blue, // Change color if image is selected
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -225,7 +226,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.translate('Name') ?? "Name",
+                        labelText:
+                            AppLocalizations.of(context)!.translate('Name') ??
+                                "Name",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
@@ -243,7 +246,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                     TextFormField(
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.translate('Address:') ?? "Address",
+                        labelText: AppLocalizations.of(context)!
+                                .translate('Address:') ??
+                            "Address",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
@@ -285,7 +290,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                         LengthLimitingTextInputFormatter(10),
                       ],
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.translate('Contact') ?? "Contact",
+                        labelText: AppLocalizations.of(context)!
+                                .translate('Contact') ??
+                            "Contact",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
@@ -309,7 +316,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                         LengthLimitingTextInputFormatter(10),
                       ],
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.translate('Contact 2') ?? "Contact 2",
+                        labelText: AppLocalizations.of(context)!
+                                .translate('Contact 2') ??
+                            "Contact 2",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
@@ -320,7 +329,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.translate('Gender') ?? "Gender",
+                        labelText:
+                            AppLocalizations.of(context)!.translate('Gender') ??
+                                "Gender",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.grey),
@@ -336,7 +347,10 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(AppLocalizations.of(context)!.translate(value) ?? value,),
+                          child: Text(
+                            AppLocalizations.of(context)!.translate(value) ??
+                                value,
+                          ),
                         );
                       }).toList(),
                       validator: (value) {
@@ -369,7 +383,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
-                        labelText:  AppLocalizations.of(context)!.translate('Aadhar Number') ?? "Aadhar Number",
+                        labelText: AppLocalizations.of(context)!
+                                .translate('Aadhar Number') ??
+                            "Aadhar Number",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(color: Colors.grey),
@@ -384,43 +400,53 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                     ),
                     isVerify == true
                         ? Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          decoration: InputDecoration(
-                              suffixIcon: TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isVerify = false;
-                                  });
-                                },
-                                child: const Text("Submit"),
-                              ),
-                              hintText: "Enter Verification code",
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(10))),
-                        )
-                      ],
-                    )
+                            children: [
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                decoration: InputDecoration(
+                                    suffixIcon: TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isVerify = false;
+                                        });
+                                      },
+                                      child: const Text("Submit"),
+                                    ),
+                                    hintText: "Enter Verification code",
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10))),
+                              )
+                            ],
+                          )
                         : const SizedBox(height: 10),
 
                     const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context)!.translate('Current Company :-') ?? "Current Company :-",),
+                        Text(
+                          AppLocalizations.of(context)!
+                                  .translate('Current Company :-') ??
+                              "Current Company :-",
+                        ),
                         Expanded(
                           child: Row(
                             children: [
                               Radio(
-                                  value: 1, groupValue: currentCompany, onChanged: (index) {
-                                setState(() {
-                                  currentCompany = 1;
-                                });
-                              }),
+                                  value: 1,
+                                  groupValue: currentCompany,
+                                  onChanged: (index) {
+                                    setState(() {
+                                      currentCompany = 1;
+                                    });
+                                  }),
                               Expanded(
-                                child: Text(AppLocalizations.of(context)!.translate('None') ?? "None",),
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                          .translate('None') ??
+                                      "None",
+                                ),
                               )
                             ],
                           ),
@@ -429,106 +455,140 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                           child: Row(
                             children: [
                               Radio(
-                                  value: 2, groupValue: currentCompany, onChanged: (index) {
-                                setState(() {
-                                  currentCompany = 2;
-                                });
-                              }),
-                              Expanded(child: Text(AppLocalizations.of(context)!.translate('Yes') ?? "Yes",))
+                                  value: 2,
+                                  groupValue: currentCompany,
+                                  onChanged: (index) {
+                                    setState(() {
+                                      currentCompany = 2;
+                                    });
+                                  }),
+                              Expanded(
+                                  child: Text(
+                                AppLocalizations.of(context)!
+                                        .translate('Yes') ??
+                                    "Yes",
+                              ))
                             ],
                           ),
-
                         ),
-
                       ],
                     ),
                     const SizedBox(height: 5),
 
-                    currentCompany == 2 ? Column(
-                      children: [
-                        TextFormField(
-                          controller: company_Name,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.translate('Company Name') ?? "Company Name",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.black), // Specify border color
-                            ),
-                          ),
-                          validator: (value) {
-                            if ((value == null && currentCompany == 2 )|| (value!.isEmpty && currentCompany == 2) ) {
-                              return 'Please enter a company name';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(AppLocalizations.of(context)!.translate('Choose method :-') ?? "Choose method :-"),
-                            Expanded(
-                              child: Row(
+                    currentCompany == 2
+                        ? Column(
+                            children: [
+                              TextFormField(
+                                controller: company_Name,
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context)!
+                                          .translate('Company Name') ??
+                                      "Company Name",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors
+                                            .black), // Specify border color
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if ((value == null && currentCompany == 2) ||
+                                      (value!.isEmpty && currentCompany == 2)) {
+                                    return 'Please enter a company name';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Radio(
-                                      value: 1, groupValue: method, onChanged: (index) {
-                                    setState(() {
-                                      method = 1;
-                                    });
-                                  }),
+                                  Text(AppLocalizations.of(context)!
+                                          .translate('Choose method :-') ??
+                                      "Choose method :-"),
                                   Expanded(
-                                    child: Text(AppLocalizations.of(context)!.translate('Salary') ?? 'Salary'),
-                                  )
+                                    child: Row(
+                                      children: [
+                                        Radio(
+                                            value: 1,
+                                            groupValue: method,
+                                            onChanged: (index) {
+                                              setState(() {
+                                                method = 1;
+                                              });
+                                            }),
+                                        Expanded(
+                                          child: Text(
+                                              AppLocalizations.of(context)!
+                                                      .translate('Salary') ??
+                                                  'Salary'),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Radio(
+                                            value: 2,
+                                            groupValue: method,
+                                            onChanged: (index) {
+                                              setState(() {
+                                                method = 2;
+                                              });
+                                            }),
+                                        Expanded(
+                                            child: Text(AppLocalizations.of(
+                                                        context)!
+                                                    .translate('per piece') ??
+                                                'per piece'))
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Radio(
-                                      value: 2, groupValue: method, onChanged: (index) {
-                                    setState(() {
-                                      method = 2;
-                                    });
-                                  }),
-                                  Expanded(child: Text(AppLocalizations.of(context)!.translate('per piece') ?? 'per piece'))
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        method == 1 ? TextFormField(
-                          controller: salary,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.translate('Enter Salary') ?? 'Enter Salary',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.black), // Specify border color
-                            ),
-                          ),
-                        ) : TextFormField(
-                          controller: salary,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.translate('Enter price per piece') ?? "Enter price per piece",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.black), // Specify border color
-                            ),
-                          ),
-                        ),
-                      ],
-                    ) :Container(),
+                              method == 1
+                                  ? TextFormField(
+                                      controller: salary,
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context)!
+                                                .translate('Enter Salary') ??
+                                            'Enter Salary',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                              color: Colors
+                                                  .black), // Specify border color
+                                        ),
+                                      ),
+                                    )
+                                  : TextFormField(
+                                      controller: salary,
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context)!
+                                                .translate(
+                                                    'Enter price per piece') ??
+                                            "Enter price per piece",
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                              color: Colors
+                                                  .black), // Specify border color
+                                        ),
+                                      ),
+                                    ),
+                            ],
+                          )
+                        : Container(),
 
                     const SizedBox(height: 10),
                     // dropdown_menu_for_department(),
@@ -539,7 +599,11 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
                       ),
-                      hint:  Text(AppLocalizations.of(context)!.translate('Select Department') ?? "Select Department",),
+                      hint: Text(
+                        AppLocalizations.of(context)!
+                                .translate('Select Department') ??
+                            "Select Department",
+                      ),
                       isExpanded: true,
                       isDense: true,
                       value: _selecteddepartment,
@@ -552,7 +616,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                       items: department!.map((department) {
                         return DropdownMenuItem<String>(
                           value: department["departmentName"],
-                          child: Text(AppLocalizations.of(context)!.translate(department["departmentName"]) ?? department["departmentName"]),
+                          child: Text(AppLocalizations.of(context)!
+                                  .translate(department["departmentName"]) ??
+                              department["departmentName"]),
                         );
                       }).toList(),
                     ),
@@ -574,7 +640,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                         return null;
                       },
                       value: _selecteddesignation,
-                      hint: Text(_selecteddesignation?? ""),
+                      hint: Text(_selecteddesignation ?? ""),
                       onChanged: (newValue) {
                         setState(() {
                           _selecteddesignation = newValue!;
@@ -583,7 +649,9 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                       items: designation!.map((designation) {
                         return DropdownMenuItem<String>(
                           value: designation["designationName"],
-                          child: Text(AppLocalizations.of(context)!.translate(designation["designationName"]) ??designation["designationName"]),
+                          child: Text(AppLocalizations.of(context)!
+                                  .translate(designation["designationName"]) ??
+                              designation["designationName"]),
                         );
                       }).toList(),
                     ),
@@ -602,7 +670,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                       child: SizedBox(
                         height: MediaQuery.of(context).size.height * .06,
                         width:
-                        double.infinity, // Increase the width of the button
+                            double.infinity, // Increase the width of the button
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
@@ -613,17 +681,18 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
                           onPressed: () async {
                             setState(() {
                               _isUpdatingProfile =
-                              true; // Show CircularProgressIndicator
+                                  true; // Show CircularProgressIndicator
                             });
                             if (_isImageSelected) await _uploadProfileImage();
                             await _updateProfile();
                             setState(() {
                               _isUpdatingProfile =
-                              false; // Hide CircularProgressIndicator
+                                  false; // Hide CircularProgressIndicator
                             });
                           },
                           child: Text(
-                            AppLocalizations.of(context)!.translate('Update') ?? "Update",
+                            AppLocalizations.of(context)!.translate('Update') ??
+                                "Update",
                             style: TextStyle(fontSize: 18.0),
                           ),
                         ),
@@ -643,17 +712,17 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
   //fetch data
 
   Future<void> fetchCities() async {
-    final response = await http.get(
-        Uri.parse('https://diamond-platform-12038fd67b59.herokuapp.com/city'));
+    final response =
+        await http.get(Uri.parse('https://diamond-server.vercel.app/city'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['data'] != null && data['data'] is List) {
         setState(() {
           cities = List<String>.from(data['data'].map((city) =>
-          city['cityName'] != null
-              ? city['cityName'].toString()
-              : '')); // Convert to string, handle null
+              city['cityName'] != null
+                  ? city['cityName'].toString()
+                  : '')); // Convert to string, handle null
         });
       } else {
         throw Exception('Invalid city data format');
@@ -665,8 +734,8 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
   }
 
   Future<void> fetch_department() async {
-    final response = await http.get(Uri.parse(
-        "https://diamond-platform-12038fd67b59.herokuapp.com/department/department"));
+    final response = await http.get(
+        Uri.parse("https://diamond-server.vercel.app/department/department"));
     try {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
@@ -683,7 +752,7 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
 
   fetch_designation() async {
     var endpointUrl =
-        'https://diamond-platform-12038fd67b59.herokuapp.com/designation/$_selecteddepartment';
+        'https://diamond-server.vercel.app/designation/$_selecteddepartment';
     var response = await http.get(Uri.parse(endpointUrl));
 
     if (response.statusCode == 200) {
@@ -709,22 +778,22 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
     Map<String, dynamic> data = json.decode(prefs.getString("user_details")!);
     var _id = data["_id"];
     final url = Uri.parse(
-      'https://diamond-platform-12038fd67b59.herokuapp.com/employee/profile/$_id', // Replace with your API URL
+      'https://diamond-server.vercel.app/employee/profile/$_id', // Replace with your API URL
     );
 
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      print(data['data']);
+
       _nameController.text = data['data']['name'];
       _addressController.text = data['data']['adress'];
       selectedCity = data['data']['city'];
       _contactNo1Controller.text = data['data']['mobileNumber'].toString();
       _contactNo2Controller.text =
-      data['data']['mobileNumber2'].toString() == "null"
-          ? ""
-          : data['data']['mobileNumber2'].toString();
+          data['data']['mobileNumber2'].toString() == "null"
+              ? ""
+              : data['data']['mobileNumber2'].toString();
       _selectedGender = data['data']['gender'];
       _aadhaarController.text = data['data']['adharNumber'].toString();
       _selecteddepartment = data['data']['department'];
@@ -732,10 +801,14 @@ class _ProfilePageEmployeeState extends State<ProfilePageEmployee> {
       profileImgPath = data['data']['employeeImage'] ?? "";
 
       company_Name.text = data['data']['companyName'] ?? "";
-      salary.text = data["data"]["salary"]??"";
-      data['data']['companyName']=="null" || data['data']['companyName']==null || data['data']['companyName']==""? currentCompany = 1 : currentCompany = 2;
-      price.text = data["data"]["price"]??"";
-      print(getProfileImgURL);
+      salary.text = data["data"]["salary"] ?? "";
+      data['data']['companyName'] == "null" ||
+              data['data']['companyName'] == null ||
+              data['data']['companyName'] == ""
+          ? currentCompany = 1
+          : currentCompany = 2;
+      price.text = data["data"]["price"] ?? "";
+
 
       return data['data'];
     } else {
@@ -755,7 +828,7 @@ class _AnimatedDotsLoaderState extends State<AnimatedDotsLoader> {
   double spacing = 5.0; // Spacing between dots
   Color dotColor = Colors.blue; // Color of the dots
   Duration animationDuration =
-  Duration(milliseconds: 400); // Duration of the animation
+      Duration(milliseconds: 400); // Duration of the animation
 
   @override
   void initState() {
